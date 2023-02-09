@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -13,23 +12,20 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
+  late GoogleMapController _controller;
 
-  static const LatLng _latLng =
-      const LatLng(37.42796133580664, -122.085749655962);
-  LatLng _lastPosition = _latLng;
+  Location _location = Location();
 
-  void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+  LatLng _currentLatLng = LatLng(40.426105, -86.9118439);
+
+  void _onMapCreated(GoogleMapController controller) async {
+    _controller = controller;
+    _location.onLocationChanged.listen((l) {
+      _controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 17)));
+    });
   }
 
-  void _onCameraMove(CameraPosition position) {
-    _lastPosition = position.target;
-  }
-
-  static const CameraPosition _kGooglePlex =
-      CameraPosition(target: _latLng, zoom: 11.0);
 
   Stack _buildView() {
     return Stack(
@@ -37,8 +33,8 @@ class _MainPageState extends State<MainPage> {
         GoogleMap(
           onMapCreated: _onMapCreated,
           mapType: MapType.normal,
-          initialCameraPosition: _kGooglePlex,
-          onCameraMove: _onCameraMove,
+          initialCameraPosition: CameraPosition(target: _currentLatLng, zoom: 17),
+          myLocationEnabled: true,
         )
       ],
     );

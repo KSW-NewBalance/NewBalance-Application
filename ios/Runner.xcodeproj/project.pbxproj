@@ -68,7 +68,6 @@
 				67207AD558EE431440434774 /* Pods-Runner.release.xcconfig */,
 				E7BA315A4DBC4D4ABA221462 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -383,7 +382,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceflutter.newbalanceFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceFlutter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -512,7 +511,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceflutter.newbalanceFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceFlutter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -535,7 +534,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceflutter.newbalanceFlutter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.newbalance.newbalanceFlutter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
