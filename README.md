@@ -1,2 +1,2 @@
 # NewBalance-Application
-Creating mobile application by using Flutter
+Mobile application for Monitoring the Running Gait
