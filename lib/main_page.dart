@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MainPage extends StatefulWidget {
-  MainPage({super.key, required this.title});
+  const MainPage({super.key, required this.title});
 
   final String title;
 
