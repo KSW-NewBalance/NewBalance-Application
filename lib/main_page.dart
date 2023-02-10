@@ -30,6 +30,8 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+
+
   Stack _buildView() {
     return Stack(
       children: <Widget>[
@@ -39,6 +41,8 @@ class _MainPageState extends State<MainPage> {
           initialCameraPosition:
               CameraPosition(target: _currentLatLng, zoom: 17),
           myLocationEnabled: true,
+          indoorViewEnabled: true,
+          padding: EdgeInsets.fromLTRB(0, 0, 12, 114)
           //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
         ),
         Container(
@@ -49,7 +53,7 @@ class _MainPageState extends State<MainPage> {
             child: Text('Start'),
             style: ElevatedButton.styleFrom(
                 textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w700),
-                minimumSize: Size.fromHeight(64)),
+                minimumSize: Size.fromHeight(64), shadowColor: Colors.grey),
           ),
         )
       ],
