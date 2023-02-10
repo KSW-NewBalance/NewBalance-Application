@@ -16,20 +16,19 @@ class _MainPageState extends State<MainPage> {
 
   Location _location = Location();
 
-  LatLng _currentLatLng = LatLng(40.42599720832946, -86.90980084240438); // K-SW location
+  LatLng _currentLatLng =
+      LatLng(40.42599720832946, -86.90980084240438); // K-SW location
 
-  void _onMapCreated(GoogleMapController controller) async{
+  void _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
     setState(() {
       _location.onLocationChanged.listen((l) {
-        _controller.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: LatLng(l.latitude!, l.longitude!), zoom: 17)));
+        _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+            target: LatLng(l.latitude!, l.longitude!), zoom: 17)));
         _currentLatLng = LatLng(l.latitude!, l.longitude!);
       });
     });
   }
-
-
 
   Stack _buildView() {
     return Stack(
@@ -37,9 +36,21 @@ class _MainPageState extends State<MainPage> {
         GoogleMap(
           onMapCreated: _onMapCreated,
           mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(target: _currentLatLng, zoom: 17),
+          initialCameraPosition:
+              CameraPosition(target: _currentLatLng, zoom: 17),
           myLocationEnabled: true,
           //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
+          alignment: Alignment.bottomCenter,
+          child: ElevatedButton(
+            onPressed: () {},
+            child: Text('Start'),
+            style: ElevatedButton.styleFrom(
+                textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w700),
+                minimumSize: Size.fromHeight(64)),
+          ),
         )
       ],
     );
