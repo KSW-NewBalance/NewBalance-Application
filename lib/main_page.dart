@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:newbalance_flutter/constants.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -30,21 +31,19 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-
-
   Stack _buildView() {
     return Stack(
       children: <Widget>[
         GoogleMap(
-          onMapCreated: _onMapCreated,
-          mapType: MapType.normal,
-          initialCameraPosition:
-              CameraPosition(target: _currentLatLng, zoom: 17),
-          myLocationEnabled: true,
-          indoorViewEnabled: true,
-          padding: EdgeInsets.fromLTRB(0, 0, 12, 114)
-          //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
-        ),
+            onMapCreated: _onMapCreated,
+            mapType: MapType.normal,
+            initialCameraPosition:
+                CameraPosition(target: _currentLatLng, zoom: 17),
+            myLocationEnabled: true,
+            indoorViewEnabled: true,
+            padding: EdgeInsets.fromLTRB(0, 0, 10, 114)
+            //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
+            ),
         Container(
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
@@ -52,8 +51,27 @@ class _MainPageState extends State<MainPage> {
             onPressed: () {},
             child: Text('Start'),
             style: ElevatedButton.styleFrom(
-                textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w700),
-                minimumSize: Size.fromHeight(64), shadowColor: Colors.grey),
+              textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w700, color: Colors.white),
+              minimumSize: Size.fromHeight(64),
+              shadowColor: Colors.grey,
+            ),
+          ),
+        ),
+        Container(
+          alignment: Alignment.topRight,
+          margin: EdgeInsets.fromLTRB(0.0, 24.0, 10.0, 0.0),
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 11.0),
+              shadowColor: Colors.grey,
+            ),
+            child: const Icon(
+              Icons.calendar_today_outlined,
+              color: Colors.white,
+              size: 26,
+            ),
           ),
         )
       ],
