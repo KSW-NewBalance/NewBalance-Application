@@ -30,53 +30,87 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  Container _showBottomSheet() {
+  Container _showRunningInformationBottomSheet() {
     showModalBottomSheet(
         context: context,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        backgroundColor: Colors.grey[200],
         builder: (BuildContext context) {
           return Container(
-            height: 332,
-            color: Colors.grey[200],
-            padding: EdgeInsets.symmetric(vertical: 35, horizontal: 30),
+            height: 340,
+            padding: EdgeInsets.fromLTRB(30, 35, 30, 0),
             child: Column(
               //mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(
+                const Text(
                   constants.runningInformation,
                   style: TextStyle(
                       color: Colors.black,
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.w600),
                 ),
                 Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: Colors.white,
                   ),
-                  margin: EdgeInsets.fromLTRB(0, 17, 0, 21),
+                  margin: EdgeInsets.fromLTRB(0, 18, 0, 21),
                   padding: EdgeInsets.symmetric(vertical: 40, horizontal: 28),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         children: const [
-                          Text('0.00', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24),),
-                          Text(constants.distance, style: TextStyle(fontSize: 12),),
+                          Text(
+                            '0.00',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 24),
+                          ),
+                          Text(
+                            constants.distance,
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
                         children: const [
-                          Text('00:00', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24),),
-                          Text(constants.totalTime, style: TextStyle(fontSize: 12),),
+                          Text(
+                            '00:00',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 24),
+                          ),
+                          Text(
+                            constants.totalTime,
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       ),
                       Column(
                         children: const [
-                          Text('_\'__\"', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24),),
-                          Text(constants.averagePage, style: TextStyle(fontSize: 12),),
+                          Text(
+                            '_\'__\"',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 24),
+                          ),
+                          Text(
+                            constants.averagePage,
+                            style: TextStyle(fontSize: 12),
+                          ),
                         ],
                       )
                     ],
+                  ),
+                ),
+                ElevatedButton(onPressed: _showRunningQuestionBottomSheet,
+                    child: Icon(
+                      Icons.stop,
+                      size: 56,
+                    ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: CircleBorder(),
+                    padding: EdgeInsets.all(6),
                   ),
                 )
               ],
@@ -84,6 +118,11 @@ class _MainPageState extends State<MainPage> {
           );
         });
     return Container();
+  }
+
+  void _showRunningQuestionBottomSheet() {
+    //todo
+    debugPrint("showRunningQuestion");
   }
 
   Stack _buildView() {
@@ -103,10 +142,10 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            onPressed: _showBottomSheet,
+            onPressed: _showRunningInformationBottomSheet,
             child: Text(constants.start),
             style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(
+              textStyle: const TextStyle(
                   fontSize: 32.0,
                   fontWeight: FontWeight.w700,
                   color: Colors.white),
