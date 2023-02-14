@@ -10,6 +10,7 @@ const String runningInformation = 'Running Information';
 const String distance = 'Distance';
 const String totalTime = 'Total Time';
 const String averagePage = 'Average Pace';
+const String afterRunningQuestion = 'How was your run?';
+const String easy = 'easy';
+const String hard = 'hard';
 
-/// Image
-const String imgStopButton = 'assets/images/btn_stop.svg';
