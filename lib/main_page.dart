@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key, required this.title});
@@ -18,6 +19,14 @@ class _MainPageState extends State<MainPage> {
   Location _location = Location();
   LatLng _currentLatLng =
       LatLng(40.42599720832946, -86.90980084240438); // K-SW location
+
+  final _stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await _stopWatchTimer.dispose();
+  }
 
   void _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
@@ -77,13 +86,22 @@ class _MainPageState extends State<MainPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _runningInformationItem('0.00', constants.distance),
-                      _runningInformationItem('00:00', constants.totalTime),
+                      StreamBuilder<int>(
+                        stream: _stopWatchTimer.rawTime,
+                        initialData: 0,
+                          builder: (context, snap) {
+                          final value = snap.data;
+                          final displayTime = StopWatchTimer.getDisplayTime(value!);
+                          return _runningInformationItem(displayTime, constants.totalTime);
+                          },
+                      ),
                       _runningInformationItem('_\'__\"', constants.averagePage),
                     ],
                   ),
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    _stopWatchTimer.onResetTimer();
                     Navigator.pop(context);
                     _showRunningQuestionBottomSheet();
                   },
@@ -190,7 +208,10 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            onPressed: _showRunningInformationBottomSheet,
+            onPressed: () {
+              _stopWatchTimer.onStartTimer();
+              _showRunningInformationBottomSheet();
+            },
             child: Text(constants.start),
             style: ElevatedButton.styleFrom(
               textStyle: const TextStyle(
