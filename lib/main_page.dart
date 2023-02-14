@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 
 class MainPage extends StatefulWidget {
@@ -79,7 +78,10 @@ class _MainPageState extends State<MainPage> {
                     ],
                   ),
                 ),
-                ElevatedButton(onPressed: _showRunningQuestionBottomSheet,
+                ElevatedButton(onPressed: (){
+                  Navigator.pop(context);
+                  _showRunningQuestionBottomSheet();
+                },
                     child: Icon(Icons.stop, size: 55,),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -102,13 +104,26 @@ class _MainPageState extends State<MainPage> {
         shape: CircleBorder(),
         backgroundColor: Colors.blue,
         minimumSize: Size(44,45),
-        textStyle: TextStyle(
+        textStyle: const TextStyle(
           fontSize: 21,
           color: Colors.white,
           fontWeight: FontWeight.w500
         )
       ),
         child: Text('$num'),
+    );
+  }
+
+  Column _signNumber(String path, String text){
+    return Column(
+        children: <Widget>[
+          Image.asset(path, width: 24, height: 18, color: Colors.grey[900]),
+          Text(text,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black54
+          ),),
+        ]
     );
   }
 
@@ -120,13 +135,14 @@ class _MainPageState extends State<MainPage> {
         builder: (BuildContext context) {
           return Container(
             height: 230,
-            padding: EdgeInsets.fromLTRB(37, 35, 37, 20),
+            padding: EdgeInsets.fromLTRB(42, 35, 42, 20),
+            alignment: Alignment.center,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 _bottomSheetHeaderText(constants.afterRunningQuestion),
+                SizedBox(height: 28),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     _numberButton(1),
                     _numberButton(2),
@@ -135,7 +151,21 @@ class _MainPageState extends State<MainPage> {
                     _numberButton(5),
                   ],
                 ),
+                SizedBox(height: 21),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        _signNumber('assets/images/left_arrow.png', constants.easy)
+                      ]
+                    ),
+                    Column(
+                        children: <Widget>[
+                          _signNumber('assets/images/right_arrow.png', constants.hard)
+                        ]
+                    ),
+                  ],
                 )
               ],
             )
@@ -162,8 +192,7 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            //onPressed: _showRunningInformationBottomSheet,
-            onPressed: _showRunningQuestionBottomSheet,
+            onPressed: _showRunningInformationBottomSheet,
             child: Text(constants.start),
             style: ElevatedButton.styleFrom(
               textStyle: const TextStyle(
