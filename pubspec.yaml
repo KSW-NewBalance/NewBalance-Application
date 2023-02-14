@@ -37,11 +37,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
-  flutter_blue: ^0.8.0
   google_maps_flutter: ^2.2.3
   location: ^4.2.0
   google_fonts: ^4.0.3
-  flutter_svg: ^2.0.1
+  stop_watch_timer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

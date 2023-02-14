@@ -30,12 +30,18 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  Column _runningInformationItem(String data, String type){
+  Column _runningInformationItem(String data, String type) {
     const h3TextStyle = TextStyle(fontWeight: FontWeight.w600, fontSize: 24);
     return Column(
       children: [
-        Text(data, style: h3TextStyle,),
-        Text(type, style: TextStyle(fontSize: 12),),
+        Text(
+          data,
+          style: h3TextStyle,
+        ),
+        Text(
+          type,
+          style: TextStyle(fontSize: 12),
+        ),
       ],
     );
   }
@@ -44,9 +50,7 @@ class _MainPageState extends State<MainPage> {
     return Text(
       text,
       style: const TextStyle(
-          color: Colors.black,
-          fontSize: 22,
-          fontWeight: FontWeight.w600),
+          color: Colors.black, fontSize: 22, fontWeight: FontWeight.w600),
     );
   }
 
@@ -78,11 +82,15 @@ class _MainPageState extends State<MainPage> {
                     ],
                   ),
                 ),
-                ElevatedButton(onPressed: (){
-                  Navigator.pop(context);
-                  _showRunningQuestionBottomSheet();
-                },
-                    child: Icon(Icons.stop, size: 55,),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    _showRunningQuestionBottomSheet();
+                  },
+                  child: Icon(
+                    Icons.stop,
+                    size: 55,
+                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
@@ -97,34 +105,27 @@ class _MainPageState extends State<MainPage> {
     return Container();
   }
 
-  ElevatedButton _numberButton(int num){
+  ElevatedButton _numberButton(int num) {
     return ElevatedButton(
-        onPressed: (){},
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
-        shape: CircleBorder(),
-        backgroundColor: Colors.blue,
-        minimumSize: Size(44,45),
-        textStyle: const TextStyle(
-          fontSize: 21,
-          color: Colors.white,
-          fontWeight: FontWeight.w500
-        )
-      ),
-        child: Text('$num'),
+          shape: CircleBorder(),
+          backgroundColor: Colors.blue,
+          minimumSize: Size(44, 45),
+          textStyle: const TextStyle(
+              fontSize: 21, color: Colors.white, fontWeight: FontWeight.w500)),
+      child: Text('$num'),
     );
   }
 
-  Column _signNumber(String path, String text){
-    return Column(
-        children: <Widget>[
-          Image.asset(path, width: 24, height: 18, color: Colors.grey[900]),
-          Text(text,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black54
-          ),),
-        ]
-    );
+  Column _signNumber(String path, String text) {
+    return Column(children: <Widget>[
+      Image.asset(path, width: 24, height: 18, color: Colors.grey[900]),
+      Text(
+        text,
+        style: const TextStyle(fontSize: 12, color: Colors.black54),
+      ),
+    ]);
   }
 
   Container _showRunningQuestionBottomSheet() {
@@ -134,42 +135,39 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: Colors.grey[200],
         builder: (BuildContext context) {
           return Container(
-            height: 230,
-            padding: EdgeInsets.fromLTRB(42, 35, 42, 20),
-            alignment: Alignment.center,
-            child: Column(
-              children: <Widget>[
-                _bottomSheetHeaderText(constants.afterRunningQuestion),
-                SizedBox(height: 28),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    _numberButton(1),
-                    _numberButton(2),
-                    _numberButton(3),
-                    _numberButton(4),
-                    _numberButton(5),
-                  ],
-                ),
-                SizedBox(height: 21),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        _signNumber('assets/images/left_arrow.png', constants.easy)
-                      ]
-                    ),
-                    Column(
-                        children: <Widget>[
-                          _signNumber('assets/images/right_arrow.png', constants.hard)
-                        ]
-                    ),
-                  ],
-                )
-              ],
-            )
-          );
+              height: 230,
+              padding: EdgeInsets.fromLTRB(42, 35, 42, 20),
+              alignment: Alignment.center,
+              child: Column(
+                children: <Widget>[
+                  _bottomSheetHeaderText(constants.afterRunningQuestion),
+                  SizedBox(height: 28),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      _numberButton(1),
+                      _numberButton(2),
+                      _numberButton(3),
+                      _numberButton(4),
+                      _numberButton(5),
+                    ],
+                  ),
+                  SizedBox(height: 21),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Column(children: <Widget>[
+                        _signNumber(
+                            'assets/images/left_arrow.png', constants.easy)
+                      ]),
+                      Column(children: <Widget>[
+                        _signNumber(
+                            'assets/images/right_arrow.png', constants.hard)
+                      ]),
+                    ],
+                  )
+                ],
+              ));
         });
 
     return Container();
