@@ -38,6 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   google_maps_flutter: ^2.2.3
+  flutter_background_geolocation: ^4.9.0
   location: ^4.2.0
   google_fonts: ^4.0.3
   stop_watch_timer: ^2.0.0

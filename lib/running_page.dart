@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class RunningPage extends StatefulWidget {
   const RunningPage({super.key});
