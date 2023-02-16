@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:newbalance_flutter/running_page.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class CountdownPage extends StatefulWidget {
@@ -18,7 +19,16 @@ class _CountdownPageState extends State<CountdownPage> {
   void initState(){
     super.initState();
     _countdownTimer.onStartTimer();
+    var runningPage = const RunningPage();
+    _countdownTimer.rawTime.listen((value) {
+      if (value == 0) {
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => runningPage));
+      }
+    });
+
   }
+
 
   StreamBuilder<int> _buildView() {
     return StreamBuilder<int>(
@@ -53,6 +63,7 @@ class _CountdownPageState extends State<CountdownPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: _buildView(),
     );

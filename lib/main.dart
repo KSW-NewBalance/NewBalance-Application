@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'countdown_page.dart';
 import 'main_page.dart';
 import 'constants.dart';
 
@@ -20,7 +19,7 @@ class MyApp extends StatelessWidget {
         primaryColor: Color(primaryColor.hashCode),
         textTheme: GoogleFonts.notoSansTextTheme()
       ),
-      home: const CountdownPage(),
+      home: const MainPage(),
     );
   }
 }
