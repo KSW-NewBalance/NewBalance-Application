@@ -210,6 +210,7 @@ class _MainPageState extends State<MainPage> {
           child: ElevatedButton(
             onPressed: () {
               _stopWatchTimer.onStartTimer();
+              //todo move to countdown
               _showRunningInformationBottomSheet();
             },
             child: Text(constants.start),
