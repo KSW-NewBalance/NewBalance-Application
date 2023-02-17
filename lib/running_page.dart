@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,47 +15,67 @@ class RunningPage extends StatefulWidget {
 }
 
 class _RunningPageState extends State<RunningPage> {
-  late GoogleMapController _controller;
-
+  final Completer<GoogleMapController> _controller = Completer();
+  final double zoomSize = 16.0;
   final _stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
-  Location _location = Location();
-  LatLng _currentLatLng =
-      LatLng(40.42599720832946, -86.90980084240438); // K-SW location
+  Location _location = Location(); // K-SW location
 
-  LatLng destination = LatLng(40.4731859, -86.9485859);
-
+  LatLng destination = LatLng(40.4273666, -86.9153586);
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
+  LatLng source = LatLng(40.42599720832946, -86.90980084240438); // todo 시작 위치
 
   void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         constants.google_api_key,
-        PointLatLng(_currentLatLng.latitude, _currentLatLng.longitude),
-        PointLatLng(destination.latitude, destination.longitude)
-    );
+        PointLatLng(source!.latitude!, source!.longitude!),
+        PointLatLng(destination.latitude, destination.longitude));
 
     if (result.points.isNotEmpty) {
-      result.points.forEach((PointLatLng point) {
+      for (var point in result.points) {
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+      }
       setState(() {});
     }
   }
 
-  void getCurrentLocation(){
-    Location location = Location();
-    location.getLocation().then((location) => currentLocation = location);
+  void getCurrentLocation() async {
+    //Location location = Location();
+
+    await _location.getLocation().then((location) {
+      currentLocation = location;
+      // todo source
+    });
     setState(() {});
     debugPrint('currentLocation: ${currentLocation}');
+
+    _location.onLocationChanged.listen((newLoc) {
+      // _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      //     target: LatLng(l.latitude!, l.longitude!), zoom: zoomSize)));
+    });
+
+    GoogleMapController googleMapController = await _controller.future;
+
+    _location.onLocationChanged.listen((newLoc) {
+      setState(() {
+        currentLocation = newLoc;
+
+        googleMapController.animateCamera(
+            CameraUpdate.newCameraPosition(CameraPosition(
+          target: LatLng(newLoc.latitude!, newLoc.longitude!),
+          zoom: zoomSize,
+        )));
+      });
+    });
   }
 
   @override
   void initState() {
+    super.initState();
     getCurrentLocation();
     getPolyPoints();
-    super.initState();
   }
 
   @override
@@ -64,18 +86,6 @@ class _RunningPageState extends State<RunningPage> {
       Future.delayed(const Duration(microseconds: 500), () {
         //_stopWatchTimer.onStartTimer();
         //_showRunningInformationBottomSheet();
-      });
-    });
-  }
-
-
-  void _onMapCreated(GoogleMapController controller) async {
-    _controller = controller;
-    setState(() {
-      _location.onLocationChanged.listen((l) {
-        _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-            target: LatLng(l.latitude!, l.longitude!), zoom: 17)));
-        _currentLatLng = LatLng(l.latitude!, l.longitude!);
       });
     });
   }
@@ -133,7 +143,8 @@ class _RunningPageState extends State<RunningPage> {
                         builder: (context, snap) {
                           final value = snap.data;
                           final displayTime =
-                              StopWatchTimer.getDisplayTime(value!).substring(3, 8);
+                              StopWatchTimer.getDisplayTime(value!)
+                                  .substring(3, 8);
                           return _runningInformationItem(
                               displayTime, constants.totalTime);
                         },
@@ -208,11 +219,7 @@ class _RunningPageState extends State<RunningPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      _numberButton(1),
-                      _numberButton(2),
-                      _numberButton(3),
-                      _numberButton(4),
-                      _numberButton(5),
+                      for (int i = 1; i <= 5; i++) _numberButton(i),
                     ],
                   ),
                   SizedBox(height: 21),
@@ -238,41 +245,44 @@ class _RunningPageState extends State<RunningPage> {
 
   GoogleMap _buildView() {
     return GoogleMap(
-          onMapCreated: _onMapCreated,
-          mapType: MapType.normal,
-          initialCameraPosition:
-              CameraPosition(target: _currentLatLng, zoom: 13),
-          myLocationEnabled: false,
-          indoorViewEnabled: true,
-          padding: EdgeInsets.fromLTRB(0, 0, 10, 114),
-          polylines: {
-            Polyline(
-                polylineId: PolylineId("route"), points: polylineCoordinates,
-              color: constants.secondaryColor,
-              //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
-            )
-          },
-          markers: {
-            Marker(
-              markerId: MarkerId("currentLocation"),
-              position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-            ),
-            Marker(
-              markerId: MarkerId("source"),
-              position: _currentLatLng
-            ),
-            Marker(
-              markerId: MarkerId("destintation"),
-              position: destination
-            )
-          },
+      onMapCreated: (mapController) {
+        _controller.complete(mapController);
+      },
+      mapType: MapType.normal,
+      initialCameraPosition: CameraPosition(
+          target:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+          zoom: zoomSize),
+      myLocationEnabled: false,
+      indoorViewEnabled: true,
+      padding: EdgeInsets.fromLTRB(0, 0, 10, 114),
+      polylines: {
+        Polyline(
+          polylineId: PolylineId("route"), points: polylineCoordinates,
+          color: constants.secondaryColor,
+          //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
+        )
+      },
+      markers: {
+        Marker(
+          markerId: MarkerId("currentLocation"),
+          position:
+              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+        ),
+        Marker(markerId: MarkerId("source"), position: source!),
+        Marker(markerId: MarkerId("destintation"), position: destination)
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: currentLocation == null ? Center(child: Text("Loading.."),) : _buildView(),
+      body: currentLocation == null
+          ? Center(
+              child: Text("Loading.."),
+            )
+          : _buildView(),
     );
   }
 
