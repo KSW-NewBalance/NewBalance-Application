@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 
 class RunningPage extends StatefulWidget {
   const RunningPage({super.key});
@@ -15,35 +15,59 @@ class RunningPage extends StatefulWidget {
 class _RunningPageState extends State<RunningPage> {
   late GoogleMapController _controller;
 
-  Location _location = Location();
-  LatLng _currentLatLng =
-  LatLng(40.42599720832946, -86.90980084240438); // K-SW location
-
   final _stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
+  Location _location = Location();
+  LatLng _currentLatLng =
+      LatLng(40.42599720832946, -86.90980084240438); // K-SW location
+
+  LatLng destination = LatLng(40.4731859, -86.9485859);
+
+  List<LatLng> polylineCoordinates = [];
+  LocationData? currentLocation;
+
+  void getPolyPoints() async {
+    PolylinePoints polylinePoints = PolylinePoints();
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        constants.google_api_key,
+        PointLatLng(_currentLatLng.latitude, _currentLatLng.longitude),
+        PointLatLng(destination.latitude, destination.longitude)
+    );
+
+    if (result.points.isNotEmpty) {
+      result.points.forEach((PointLatLng point) {
+        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      });
+      setState(() {});
+    }
+  }
+
+  void getCurrentLocation(){
+    Location location = Location();
+    location.getLocation().then((location) => currentLocation = location);
+    setState(() {});
+    debugPrint('currentLocation: ${currentLocation}');
+  }
+
   @override
-  void initState(){
+  void initState() {
+    getCurrentLocation();
+    getPolyPoints();
     super.initState();
   }
 
   @override
-  void didChangeDependencies(){
+  void didChangeDependencies() {
     super.didChangeDependencies();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Future.delayed(const Duration(microseconds: 500), (){
-        _stopWatchTimer.onStartTimer();
-        _showRunningInformationBottomSheet();
+      Future.delayed(const Duration(microseconds: 500), () {
+        //_stopWatchTimer.onStartTimer();
+        //_showRunningInformationBottomSheet();
       });
-
     });
   }
 
-  @override
-  void dispose() async {
-    super.dispose();
-    await _stopWatchTimer.dispose();
-  }
 
   void _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
@@ -108,8 +132,10 @@ class _RunningPageState extends State<RunningPage> {
                         initialData: 0,
                         builder: (context, snap) {
                           final value = snap.data;
-                          final displayTime = StopWatchTimer.getDisplayTime(value!);
-                          return _runningInformationItem(displayTime, constants.totalTime);
+                          final displayTime =
+                              StopWatchTimer.getDisplayTime(value!).substring(3, 8);
+                          return _runningInformationItem(
+                              displayTime, constants.totalTime);
                         },
                       ),
                       _runningInformationItem('_\'__\"', constants.averagePage),
@@ -210,27 +236,49 @@ class _RunningPageState extends State<RunningPage> {
     return Container();
   }
 
-  Stack _buildView() {
-    return Stack(
-      children: <Widget>[
-        GoogleMap(
-            onMapCreated: _onMapCreated,
-            mapType: MapType.normal,
-            initialCameraPosition:
-            CameraPosition(target: _currentLatLng, zoom: 17),
-            myLocationEnabled: false,
-            indoorViewEnabled: true,
-            padding: EdgeInsets.fromLTRB(0, 0, 10, 114)
-          //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
-        )
-      ],
+  GoogleMap _buildView() {
+    return GoogleMap(
+          onMapCreated: _onMapCreated,
+          mapType: MapType.normal,
+          initialCameraPosition:
+              CameraPosition(target: _currentLatLng, zoom: 13),
+          myLocationEnabled: false,
+          indoorViewEnabled: true,
+          padding: EdgeInsets.fromLTRB(0, 0, 10, 114),
+          polylines: {
+            Polyline(
+                polylineId: PolylineId("route"), points: polylineCoordinates,
+              color: constants.secondaryColor,
+              //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
+            )
+          },
+          markers: {
+            Marker(
+              markerId: MarkerId("currentLocation"),
+              position: LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+            ),
+            Marker(
+              markerId: MarkerId("source"),
+              position: _currentLatLng
+            ),
+            Marker(
+              markerId: MarkerId("destintation"),
+              position: destination
+            )
+          },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildView(),
+      body: currentLocation == null ? Center(child: Text("Loading.."),) : _buildView(),
     );
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await _stopWatchTimer.dispose();
   }
 }

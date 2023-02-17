@@ -1,7 +1,9 @@
 
+import 'dart:ui';
+
 const String google_api_key = 'AIzaSyA5zxSbB16eMscJpvC1jIdLU_eUJJvONo0';
-const String primaryColor = '0xff5BD4EA';
-const String secondaryColor = '0xFFCD37';
+const Color primaryColor = Color(0xff5BD4EA);
+const Color secondaryColor = Color(0xffffcd37);
 
 
 /// Main Page
