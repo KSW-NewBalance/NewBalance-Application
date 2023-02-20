@@ -5,6 +5,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class RunningPage extends StatefulWidget {
@@ -24,24 +25,34 @@ class _RunningPageState extends State<RunningPage> {
   LatLng destination = LatLng(40.4273666, -86.9153586);
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
-  LatLng source = LatLng(40.42599720832946, -86.90980084240438); // todo 시작 위치
+  LatLng source = LatLng(40.42599720832946, -86.90980084240438);
 
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
   @override
   void initState() {
+    getSourceLatLngInSF();
     setCustomMarkerIcon();
     getCurrentLocation();
-    getPolyPoints();
     super.initState();
+  }
+
+  void getSourceLatLngInSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double? latitude = prefs.getDouble(constants.latitude);
+    double? longitude = prefs.getDouble(constants.longitude);
+    if (latitude != null && longitude != null) {
+      source = LatLng(latitude, longitude);
+      debugPrint('source = ${source.latitude}, ${source.longitude}');
+    }
   }
 
   void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
         constants.google_api_key,
-        PointLatLng(source!.latitude!, source!.longitude!),
-        PointLatLng(destination.latitude, destination.longitude));
+        PointLatLng(source.latitude, source.longitude),
+        PointLatLng(currentLocation!.latitude!, currentLocation!.longitude!));
 
     if (result.points.isNotEmpty) {
       for (var point in result.points) {
@@ -52,11 +63,9 @@ class _RunningPageState extends State<RunningPage> {
   }
 
   void getCurrentLocation() async {
-    //Location location = Location();
 
     await _location.getLocation().then((location) {
       currentLocation = location;
-      // todo source
     });
     setState(() {});
     debugPrint('currentLocation: ${currentLocation}');
@@ -72,13 +81,14 @@ class _RunningPageState extends State<RunningPage> {
           target: LatLng(newLoc.latitude!, newLoc.longitude!),
           zoom: zoomSize,
         )));
+        getPolyPoints();
       });
     });
   }
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(24, 15)), "assets/images/footprint.png")
+            const ImageConfiguration(size: Size(34, 25)), "assets/images/footprint.png")
         .then((icon) {
       currentIcon = icon;
     });

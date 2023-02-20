@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:newbalance_flutter/countdown_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -30,6 +31,12 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  void addCurrentLatlngInSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble(constants.latitude, _currentLatLng.latitude);
+    prefs.setDouble(constants.longitude, _currentLatLng.longitude);
+  }
+
   Stack _buildView() {
     return Stack(
       children: <Widget>[
@@ -48,6 +55,7 @@ class _MainPageState extends State<MainPage> {
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
             onPressed: () {
+              addCurrentLatlngInSF();
               Navigator.push(context, MaterialPageRoute(builder: (context) => const CountdownPage()));
             },
             style: ElevatedButton.styleFrom(

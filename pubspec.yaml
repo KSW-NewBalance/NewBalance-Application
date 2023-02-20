@@ -42,8 +42,7 @@ dependencies:
   location: ^4.2.0
   google_fonts: ^4.0.3
   stop_watch_timer: ^2.0.0
-  flutter_svg: ^2.0.1
-
+  shared_preferences: ^2.0.17
 
 dev_dependencies:
   flutter_test:

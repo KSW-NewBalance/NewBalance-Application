@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primaryColor: constants.primaryColor,
         textTheme: GoogleFonts.notoSansTextTheme()
       ),
-      home: const RunningPage(),
+      home: const MainPage(),
     );
   }
 }
