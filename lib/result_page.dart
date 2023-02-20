@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
 
@@ -7,9 +6,6 @@ class ResultPage extends StatefulWidget {
   ResultPage({super.key, required this.title});
 
   final String title;
-  final FlutterBlue flutterBlue = FlutterBlue.instance;
-  final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
-  final Map<Guid, List<int>> readValues = <Guid, List<int>>{};
 
   @override
   State<ResultPage> createState() => _ResultPageState();
