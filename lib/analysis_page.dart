@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'Event.dart';
 
@@ -8,9 +7,6 @@ class AnalysisPage extends StatefulWidget {
   AnalysisPage({super.key, required this.title});
 
 final String title;
-final FlutterBlue flutterBlue = FlutterBlue.instance;
-final List<BluetoothDevice> devicesList = <BluetoothDevice>[];
-final Map<Guid, List<int>> readValues = <Guid, List<int>>{};
 
 @override
 State<AnalysisPage> createState() => _AnalysisPageState();

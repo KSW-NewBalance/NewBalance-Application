@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:newbalance_flutter/constants.dart';
+import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/countdown_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.title});
-
-  final String title;
+  const MainPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _MainPageState();
@@ -16,9 +16,9 @@ class _MainPageState extends State<MainPage> {
   late GoogleMapController _controller;
 
   Location _location = Location();
-
   LatLng _currentLatLng =
       LatLng(40.42599720832946, -86.90980084240438); // K-SW location
+
 
   void _onMapCreated(GoogleMapController controller) async {
     _controller = controller;
@@ -29,6 +29,12 @@ class _MainPageState extends State<MainPage> {
         _currentLatLng = LatLng(l.latitude!, l.longitude!);
       });
     });
+  }
+
+  void addCurrentLatlngInSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble(constants.latitude, _currentLatLng.latitude);
+    prefs.setDouble(constants.longitude, _currentLatLng.longitude);
   }
 
   Stack _buildView() {
@@ -48,18 +54,24 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
-            onPressed: () {},
-            child: Text('Start'),
+            onPressed: () {
+              addCurrentLatlngInSF();
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const CountdownPage()));
+            },
             style: ElevatedButton.styleFrom(
-              textStyle: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w700, color: Colors.white),
+              textStyle: const TextStyle(
+                  fontSize: 32.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white),
               minimumSize: Size.fromHeight(64),
               shadowColor: Colors.grey,
             ),
+            child: Text(constants.start),
           ),
         ),
         Container(
           alignment: Alignment.topRight,
-          margin: EdgeInsets.fromLTRB(0.0, 24.0, 10.0, 0.0),
+          margin: EdgeInsets.fromLTRB(0.0, 54.0, 10.0, 0.0),
           child: ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
@@ -81,9 +93,6 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: _buildView(),
     );
   }
