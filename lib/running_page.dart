@@ -27,6 +27,10 @@ class _RunningPageState extends State<RunningPage> {
   LocationData? currentLocation;
   LatLng source = LatLng(40.42599720832946, -86.90980084240438);
 
+  double _dist = 0.0;
+  StreamController<double> distController = StreamController();
+
+
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
   @override
@@ -69,6 +73,18 @@ class _RunningPageState extends State<RunningPage> {
           target: LatLng(newLoc.latitude!, newLoc.longitude!),
           zoom: zoomSize,
         )));
+
+        if (_polyline.length > 0) {
+          double appendDist = Geolocator.distanceBetween(
+              _polyline.last.latitude,
+              _polyline.last.longitude,
+              newLoc.latitude!,
+              newLoc.longitude!);
+          _dist += appendDist;
+          distController.add(_dist);
+        }
+        debugPrint('dist = ${_dist}');
+
         addPolyPoints(newLoc);
       });
     });
@@ -83,7 +99,7 @@ class _RunningPageState extends State<RunningPage> {
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(44, 35)),
+            const ImageConfiguration(),
             "assets/images/footprint.png")
         .then((icon) {
       currentIcon = icon;
@@ -135,9 +151,13 @@ class _RunningPageState extends State<RunningPage> {
         destinationLongitude: currentLocation!.longitude!,
         travelMode: TravelModes.walking);
 
-    debugPrint('distance = ${distance}');
-
-    var appendDist = Geolocator.distanceBetween(source.latitude, source.longitude, currentLocation!.latitude!, currentLocation!.longitude!);
+    var appendDist = Geolocator.distanceBetween(
+        source.latitude,
+        source.longitude,
+        currentLocation!.latitude!,
+        currentLocation!.longitude!);
+    _dist += appendDist;
+    distController.add(_dist);
   }
 
   Container _showRunningInformationBottomSheet() {
@@ -162,7 +182,20 @@ class _RunningPageState extends State<RunningPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _runningInformationItem('0.00', constants.distance),
+                      // StreamBuilder<double>(
+                      //   stream: distController,
+                      //   initialData: 0.0,
+                      //   builder: (context, ),
+                      // ),
+                      StreamBuilder(
+                      stream: distController.stream,
+                      builder: (context, snap){
+                        double dist = 0.0;
+                        if (snap.data != null) {
+                          dist = snap.data!;
+                        }
+                        return _runningInformationItem((dist/1000).toStringAsFixed(2), constants.distance);
+                      }),
                       StreamBuilder<int>(
                         stream: _stopWatchTimer.rawTime,
                         initialData: 0,
@@ -200,6 +233,9 @@ class _RunningPageState extends State<RunningPage> {
             ),
           );
         });
+    setState(() {
+
+    });
     return Container();
   }
 
