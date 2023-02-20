@@ -26,6 +26,16 @@ class _RunningPageState extends State<RunningPage> {
   LocationData? currentLocation;
   LatLng source = LatLng(40.42599720832946, -86.90980084240438); // todo 시작 위치
 
+  BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
+
+  @override
+  void initState() {
+    setCustomMarkerIcon();
+    getCurrentLocation();
+    getPolyPoints();
+    super.initState();
+  }
+
   void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
     PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -51,19 +61,14 @@ class _RunningPageState extends State<RunningPage> {
     setState(() {});
     debugPrint('currentLocation: ${currentLocation}');
 
-    _location.onLocationChanged.listen((newLoc) {
-      // _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      //     target: LatLng(l.latitude!, l.longitude!), zoom: zoomSize)));
-    });
-
     GoogleMapController googleMapController = await _controller.future;
 
     _location.onLocationChanged.listen((newLoc) {
       setState(() {
         currentLocation = newLoc;
 
-        googleMapController.animateCamera(
-            CameraUpdate.newCameraPosition(CameraPosition(
+        googleMapController
+            .animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
           target: LatLng(newLoc.latitude!, newLoc.longitude!),
           zoom: zoomSize,
         )));
@@ -71,11 +76,12 @@ class _RunningPageState extends State<RunningPage> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getCurrentLocation();
-    getPolyPoints();
+  void setCustomMarkerIcon() {
+    BitmapDescriptor.fromAssetImage(
+            const ImageConfiguration(size: Size(24, 15)), "assets/images/footprint.png")
+        .then((icon) {
+      currentIcon = icon;
+    });
   }
 
   @override
@@ -265,12 +271,12 @@ class _RunningPageState extends State<RunningPage> {
       },
       markers: {
         Marker(
-          markerId: MarkerId("currentLocation"),
-          position:
-              LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
-        ),
-        Marker(markerId: MarkerId("source"), position: source!),
-        Marker(markerId: MarkerId("destintation"), position: destination)
+            markerId: MarkerId("currentLocation"),
+            position:
+                LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+            icon: currentIcon),
+        Marker(markerId: MarkerId("source"), position: source),
+        Marker(markerId: MarkerId("destination"), position: destination)
       },
     );
   }

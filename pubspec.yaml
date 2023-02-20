@@ -42,6 +42,8 @@ dependencies:
   location: ^4.2.0
   google_fonts: ^4.0.3
   stop_watch_timer: ^2.0.0
+  flutter_svg: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,7 @@ flutter:
   assets:
     - assets/images/left_arrow.png
     - assets/images/right_arrow.png
+    - assets/images/footprint.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
