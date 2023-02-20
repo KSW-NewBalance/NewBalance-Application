@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
+import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
 
 class RunningPage extends StatefulWidget {
   const RunningPage({super.key});
@@ -33,6 +35,7 @@ class _RunningPageState extends State<RunningPage> {
     setCustomMarkerIcon();
     getCurrentLocation();
     super.initState();
+    showBottomSheet();
   }
 
   void getSourceLatLngInSF() async {
@@ -46,13 +49,6 @@ class _RunningPageState extends State<RunningPage> {
         _polyline.add(source);
       });
     }
-  }
-
-  void addPolyPoints(LocationData locationData) {
-    setState(() {
-      LatLng latLng = LatLng(locationData.latitude!, locationData.longitude!);
-      _polyline.add(latLng);
-    });
   }
 
   void getCurrentLocation() async {
@@ -78,6 +74,13 @@ class _RunningPageState extends State<RunningPage> {
     });
   }
 
+  void addPolyPoints(LocationData locationData) {
+    setState(() {
+      LatLng latLng = LatLng(locationData.latitude!, locationData.longitude!);
+      _polyline.add(latLng);
+    });
+  }
+
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
             const ImageConfiguration(size: Size(44, 35)),
@@ -87,14 +90,12 @@ class _RunningPageState extends State<RunningPage> {
     });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
+  void showBottomSheet() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Future.delayed(const Duration(microseconds: 500), () {
-        //_stopWatchTimer.onStartTimer();
-        //_showRunningInformationBottomSheet();
+        _stopWatchTimer.onStartTimer();
+        getDistance();
+        _showRunningInformationBottomSheet();
       });
     });
   }
@@ -121,6 +122,22 @@ class _RunningPageState extends State<RunningPage> {
       style: const TextStyle(
           color: Colors.black, fontSize: 22, fontWeight: FontWeight.w600),
     );
+  }
+
+  void getDistance() async {
+    ByRoadDistanceCalculator distanceCalculator = ByRoadDistanceCalculator();
+
+    var distance = await distanceCalculator.getDistance(
+        constants.google_api_key,
+        startLatitude: source.latitude,
+        startLongitude: source.longitude,
+        destinationLatitude: currentLocation!.latitude!,
+        destinationLongitude: currentLocation!.longitude!,
+        travelMode: TravelModes.walking);
+
+    debugPrint('distance = ${distance}');
+
+    var appendDist = Geolocator.distanceBetween(source.latitude, source.longitude, currentLocation!.latitude!, currentLocation!.longitude!);
   }
 
   Container _showRunningInformationBottomSheet() {
