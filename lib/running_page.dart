@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
@@ -17,13 +16,12 @@ class RunningPage extends StatefulWidget {
 
 class _RunningPageState extends State<RunningPage> {
   final Completer<GoogleMapController> _controller = Completer();
-  final double zoomSize = 16.0;
+  final double zoomSize = 18.0;
   final _stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
   Location _location = Location(); // K-SW location
 
-  LatLng destination = LatLng(40.4273666, -86.9153586);
-  List<LatLng> polylineCoordinates = [];
+  List<LatLng> _polyline = [];
   LocationData? currentLocation;
   LatLng source = LatLng(40.42599720832946, -86.90980084240438);
 
@@ -44,26 +42,20 @@ class _RunningPageState extends State<RunningPage> {
     if (latitude != null && longitude != null) {
       source = LatLng(latitude, longitude);
       debugPrint('source = ${source.latitude}, ${source.longitude}');
+      setState(() {
+        _polyline.add(source);
+      });
     }
   }
 
-  void getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        constants.google_api_key,
-        PointLatLng(source.latitude, source.longitude),
-        PointLatLng(currentLocation!.latitude!, currentLocation!.longitude!));
-
-    if (result.points.isNotEmpty) {
-      for (var point in result.points) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      }
-      setState(() {});
-    }
+  void addPolyPoints(LocationData locationData) {
+    setState(() {
+      LatLng latLng = LatLng(locationData.latitude!, locationData.longitude!);
+      _polyline.add(latLng);
+    });
   }
 
   void getCurrentLocation() async {
-
     await _location.getLocation().then((location) {
       currentLocation = location;
     });
@@ -81,14 +73,15 @@ class _RunningPageState extends State<RunningPage> {
           target: LatLng(newLoc.latitude!, newLoc.longitude!),
           zoom: zoomSize,
         )));
-        getPolyPoints();
+        addPolyPoints(newLoc);
       });
     });
   }
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(34, 25)), "assets/images/footprint.png")
+            const ImageConfiguration(size: Size(44, 35)),
+            "assets/images/footprint.png")
         .then((icon) {
       currentIcon = icon;
     });
@@ -274,10 +267,12 @@ class _RunningPageState extends State<RunningPage> {
       padding: EdgeInsets.fromLTRB(0, 0, 10, 114),
       polylines: {
         Polyline(
-          polylineId: PolylineId("route"), points: polylineCoordinates,
-          color: constants.secondaryColor,
-          //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
-        )
+            polylineId: PolylineId("route"),
+            points: _polyline,
+            color: constants.secondaryColor,
+            width: 6
+            //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
+            )
       },
       markers: {
         Marker(
@@ -285,8 +280,7 @@ class _RunningPageState extends State<RunningPage> {
             position:
                 LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
             icon: currentIcon),
-        Marker(markerId: MarkerId("source"), position: source),
-        Marker(markerId: MarkerId("destination"), position: destination)
+        //Marker(markerId: MarkerId("source"), position: source),
       },
     );
   }
@@ -295,8 +289,17 @@ class _RunningPageState extends State<RunningPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: currentLocation == null
-          ? Center(
-              child: Text("Loading.."),
+          ? Container(
+              alignment: Alignment.center,
+              color: Colors.blue,
+              child: const Text(
+                '0',
+                style: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 140,
+                    color: Colors.white),
+              ),
             )
           : _buildView(),
     );
