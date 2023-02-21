@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
 import 'package:newbalance_flutter/constants.dart';
+import 'package:newbalance_flutter/main_page.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({super.key, required this.totalTime});
+  const ResultPage({super.key, required this.totalTime, required this.distance, required this.state});
   final int totalTime;
+  final double distance;
+  final int state;
 
   @override
   State<ResultPage> createState() => _ResultPageState();
@@ -25,7 +28,6 @@ class _ResultPageState extends State<ResultPage> {
   late String rearFootColorR;
 
   late String date;
-  late String distance;
   late String averagePace;
 
   @override
@@ -48,7 +50,6 @@ class _ResultPageState extends State<ResultPage> {
 
     // test running stats
 
-    distance = "0.45km";
     averagePace = "02.13";
     date = DateFormat('MM/dd/yyyy   kk:mm').format(DateTime.now());
 
@@ -62,6 +63,11 @@ class _ResultPageState extends State<ResultPage> {
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
           title: Text("Results"),
+          leading: BackButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(state: widget.state)));
+            },
+          ),
         ),
         body: Column(children: <Widget>[
           Expanded(
@@ -103,20 +109,13 @@ class _ResultPageState extends State<ResultPage> {
                         )
                       ]),
                       Column(children: <Widget>[
-                        Text(distance, style: const TextStyle(fontSize: 20)),
+                        Text((double.parse((widget.distance).toStringAsFixed(2))).toString(), style: const TextStyle(fontSize: 20)),
                         Container(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                           alignment: Alignment.center,
                           child: const Text("Distance",
                               style: TextStyle(color: Colors.blue)),
                         )
-                      ]),
-                      Column(children: <Widget>[
-                        Text(averagePace, style: const TextStyle(fontSize: 20)),
-                        const Text("Average Pace",
-                            style: TextStyle(color: Colors.blue)),
-                        const Text("(min/km)",
-                            style: TextStyle(color: Colors.blue, fontSize: 10)),
                       ]),
                     ]))
               ]),

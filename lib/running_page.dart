@@ -237,7 +237,7 @@ class _RunningPageState extends State<RunningPage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time,)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time, distance: _dist, state: state)));
         state = num;
       },
       style: ElevatedButton.styleFrom(

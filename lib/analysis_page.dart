@@ -20,9 +20,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
   void initState() {
     super.initState();
     // test data to pass through to calendar
-    // TODO: need to find average of states and then pass that array to the eventLoader
     selectedEvents = {DateTime.utc(2023,2,7): [Event(state: 3)] , DateTime.utc(2023,2,4): [Event(state: 1)],  DateTime.utc(2023,2,19): [Event(state: 5)],
-      DateTime.now().toUtc(): [Event(state: widget.state)]};
+      DateTime.utc(2023,2,21): [Event(state: widget.state)]}; // change last one to today for demonstration
   }
   List<Event> _getEventsfromDay(DateTime date) {
     return selectedEvents[date] ?? [];
