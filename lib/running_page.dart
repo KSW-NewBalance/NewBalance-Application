@@ -5,9 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/services/thingsboard_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
 
 class RunningPage extends StatefulWidget {
   const RunningPage({super.key});
@@ -26,6 +26,10 @@ class _RunningPageState extends State<RunningPage> {
   List<LatLng> _polyline = [];
   LocationData? currentLocation;
   LatLng source = LatLng(40.42599720832946, -86.90980084240438);
+
+  double _dist = 0.0;
+  StreamController<double> distController = StreamController();
+
 
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
@@ -69,6 +73,18 @@ class _RunningPageState extends State<RunningPage> {
           target: LatLng(newLoc.latitude!, newLoc.longitude!),
           zoom: zoomSize,
         )));
+
+        if (_polyline.length > 0) {
+          double appendDist = Geolocator.distanceBetween(
+              _polyline.last.latitude,
+              _polyline.last.longitude,
+              newLoc.latitude!,
+              newLoc.longitude!);
+          _dist += appendDist;
+          distController.add(_dist);
+        }
+        debugPrint('dist = ${_dist}');
+
         addPolyPoints(newLoc);
       });
     });
@@ -83,7 +99,7 @@ class _RunningPageState extends State<RunningPage> {
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(size: Size(44, 35)),
+            const ImageConfiguration(),
             "assets/images/footprint.png")
         .then((icon) {
       currentIcon = icon;
@@ -125,19 +141,14 @@ class _RunningPageState extends State<RunningPage> {
   }
 
   void getDistance() async {
-    ByRoadDistanceCalculator distanceCalculator = ByRoadDistanceCalculator();
-
-    var distance = await distanceCalculator.getDistance(
-        constants.google_api_key,
-        startLatitude: source.latitude,
-        startLongitude: source.longitude,
-        destinationLatitude: currentLocation!.latitude!,
-        destinationLongitude: currentLocation!.longitude!,
-        travelMode: TravelModes.walking);
-
-    debugPrint('distance = ${distance}');
-
-    var appendDist = Geolocator.distanceBetween(source.latitude, source.longitude, currentLocation!.latitude!, currentLocation!.longitude!);
+    if (currentLocation == null) return;
+    var appendDist = Geolocator.distanceBetween(
+        source.latitude,
+        source.longitude,
+        currentLocation!.latitude!,
+        currentLocation!.longitude!);
+    _dist += appendDist;
+    distController.add(_dist);
   }
 
   Container _showRunningInformationBottomSheet() {
@@ -162,7 +173,15 @@ class _RunningPageState extends State<RunningPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _runningInformationItem('0.00', constants.distance),
+                      StreamBuilder(
+                      stream: distController.stream,
+                      builder: (context, snap){
+                        double dist = 0.0;
+                        if (snap.data != null) {
+                          dist = snap.data!;
+                        }
+                        return _runningInformationItem((dist/1000).toStringAsFixed(2), constants.distance);
+                      }),
                       StreamBuilder<int>(
                         stream: _stopWatchTimer.rawTime,
                         initialData: 0,
@@ -181,25 +200,31 @@ class _RunningPageState extends State<RunningPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice, false);
+                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice, false);
                     Navigator.pop(context);
                     _stopWatchTimer.onResetTimer();
+                    _dist = 0.0;
                     _showRunningQuestionBottomSheet();
                   },
-                  child: Icon(
-                    Icons.stop,
-                    size: 55,
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                     shape: CircleBorder(),
                     padding: EdgeInsets.all(5),
                   ),
+                  child: const Icon(
+                    Icons.stop,
+                    size: 55,
+                  ),
                 )
               ],
             ),
           );
         });
+    setState(() {
+
+    });
     return Container();
   }
 
