@@ -163,7 +163,7 @@ class _RunningPageState extends State<RunningPage> {
         builder: (BuildContext context) {
           return Container(
             height: 340,
-            padding: EdgeInsets.fromLTRB(30, 35, 30, 0),
+            padding: EdgeInsets.fromLTRB(50, 35, 50, 0),
             child: Column(
               children: <Widget>[
                 _bottomSheetHeaderText(constants.runningInformation),
@@ -175,7 +175,7 @@ class _RunningPageState extends State<RunningPage> {
                   margin: EdgeInsets.fromLTRB(0, 18, 0, 21),
                   padding: EdgeInsets.symmetric(vertical: 40, horizontal: 28),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       StreamBuilder(
                       stream: distController.stream,
@@ -198,7 +198,7 @@ class _RunningPageState extends State<RunningPage> {
                               displayTime, constants.totalTime);
                         },
                       ),
-                      _runningInformationItem('_\'__\"', constants.averagePage),
+                      //_runningInformationItem('_\'__\"', constants.averagePage),
                     ],
                   ),
                 ),
@@ -237,6 +237,8 @@ class _RunningPageState extends State<RunningPage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
+        //ThingsBoardService.getSharedAttributes(ThingsBoardService.rightFootDevice);
+        ThingsBoardService.getSharedAttributes(ThingsBoardService.leftFootDevice);
         Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time, distance: _dist, state: state)));
         state = num;
       },
@@ -320,7 +322,6 @@ class _RunningPageState extends State<RunningPage> {
             points: _polyline,
             color: constants.secondaryColor,
             width: 6
-            //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
             )
       },
       markers: {
