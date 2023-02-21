@@ -7,7 +7,6 @@ import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
-import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
 
 class RunningPage extends StatefulWidget {
   const RunningPage({super.key});
@@ -141,16 +140,6 @@ class _RunningPageState extends State<RunningPage> {
   }
 
   void getDistance() async {
-    ByRoadDistanceCalculator distanceCalculator = ByRoadDistanceCalculator();
-
-    var distance = await distanceCalculator.getDistance(
-        constants.google_api_key,
-        startLatitude: source.latitude,
-        startLongitude: source.longitude,
-        destinationLatitude: currentLocation!.latitude!,
-        destinationLongitude: currentLocation!.longitude!,
-        travelMode: TravelModes.walking);
-
     var appendDist = Geolocator.distanceBetween(
         source.latitude,
         source.longitude,
@@ -182,11 +171,6 @@ class _RunningPageState extends State<RunningPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // StreamBuilder<double>(
-                      //   stream: distController,
-                      //   initialData: 0.0,
-                      //   builder: (context, ),
-                      // ),
                       StreamBuilder(
                       stream: distController.stream,
                       builder: (context, snap){
