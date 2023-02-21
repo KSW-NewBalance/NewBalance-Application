@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/result_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:gmaps_by_road_distance_calculator/gmaps_by_road_distance_calculator.dart';
@@ -28,6 +29,9 @@ class _RunningPageState extends State<RunningPage> {
   LatLng source = LatLng(40.42599720832946, -86.90980084240438);
 
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
+
+  int state = 0;
+  int time = 0;
 
   @override
   void initState() {
@@ -182,6 +186,7 @@ class _RunningPageState extends State<RunningPage> {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
+                    time = _stopWatchTimer.rawTime.value;
                     _stopWatchTimer.onResetTimer();
                     _showRunningQuestionBottomSheet();
                   },
@@ -207,6 +212,8 @@ class _RunningPageState extends State<RunningPage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time,)));
+        state = num;
       },
       style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
