@@ -31,7 +31,6 @@ class _RunningPageState extends State<RunningPage> {
   double _dist = 0.0;
   StreamController<double> distController = StreamController();
 
-
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
 
   int state = 0;
@@ -103,8 +102,7 @@ class _RunningPageState extends State<RunningPage> {
 
   void setCustomMarkerIcon() {
     BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(),
-            "assets/images/footprint.png")
+            const ImageConfiguration(), "assets/images/footprint.png")
         .then((icon) {
       currentIcon = icon;
     });
@@ -178,14 +176,16 @@ class _RunningPageState extends State<RunningPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       StreamBuilder(
-                      stream: distController.stream,
-                      builder: (context, snap){
-                        double dist = 0.0;
-                        if (snap.data != null) {
-                          dist = snap.data!;
-                        }
-                        return _runningInformationItem((dist/1000).toStringAsFixed(2), constants.distance);
-                      }),
+                          stream: distController.stream,
+                          builder: (context, snap) {
+                            double dist = 0.0;
+                            if (snap.data != null) {
+                              dist = snap.data!;
+                            }
+                            return _runningInformationItem(
+                                (dist / 1000).toStringAsFixed(2),
+                                constants.distance);
+                          }),
                       StreamBuilder<int>(
                         stream: _stopWatchTimer.rawTime,
                         initialData: 0,
@@ -204,8 +204,10 @@ class _RunningPageState extends State<RunningPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice, false);
-                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice, false);
+                    ThingsBoardService.saveSharedAttributes(
+                        ThingsBoardService.rightFootDevice, false);
+                    ThingsBoardService.saveSharedAttributes(
+                        ThingsBoardService.leftFootDevice, false);
                     Navigator.pop(context);
                     time = _stopWatchTimer.rawTime.value;
                     _stopWatchTimer.onResetTimer();
@@ -227,9 +229,7 @@ class _RunningPageState extends State<RunningPage> {
             ),
           );
         });
-    setState(() {
-
-    });
+    setState(() {});
     return Container();
   }
 
@@ -237,9 +237,15 @@ class _RunningPageState extends State<RunningPage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
-        //ThingsBoardService.getSharedAttributes(ThingsBoardService.rightFootDevice);
-        ThingsBoardService.getSharedAttributes(ThingsBoardService.leftFootDevice);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time, distance: _dist, state: state)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ResultPage(
+                    totalTime:
+                        StopWatchTimer.getDisplayTime(time)
+                            .substring(3, 8),
+                    distance: _dist,
+                    state: state)));
         state = num;
       },
       style: ElevatedButton.styleFrom(
@@ -321,8 +327,7 @@ class _RunningPageState extends State<RunningPage> {
             polylineId: PolylineId("route"),
             points: _polyline,
             color: constants.secondaryColor,
-            width: 6
-            )
+            width: 6)
       },
       markers: {
         Marker(
