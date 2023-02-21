@@ -27,8 +27,8 @@ class _CountdownPageState extends State<CountdownPage> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => runningPage));
       }
     });
-    ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice);
-    ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice);
+    ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice, true);
+    ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice, true);
   }
 
 

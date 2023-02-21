@@ -59,11 +59,11 @@ class ThingsBoardService {
   }
 
   // Save device shared attributes
-  static void saveSharedAttributes(DeviceInfo device) async {
+  static void saveSharedAttributes(DeviceInfo device, bool value) async {
     var res = await tbClient.getAttributeService().saveEntityAttributesV2(
         device.id!,
         AttributeScope.SHARED_SCOPE.toShortString(),
-        {'isRunning': true});
+        {'isRunning': value});
     debugPrint('Save attributes result: $res');
   }
 }

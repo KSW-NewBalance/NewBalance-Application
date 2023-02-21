@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/services/thingsboard_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -140,6 +141,7 @@ class _RunningPageState extends State<RunningPage> {
   }
 
   void getDistance() async {
+    if (currentLocation == null) return;
     var appendDist = Geolocator.distanceBetween(
         source.latitude,
         source.longitude,
@@ -198,19 +200,22 @@ class _RunningPageState extends State<RunningPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice, false);
+                    ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice, false);
                     Navigator.pop(context);
                     _stopWatchTimer.onResetTimer();
+                    _dist = 0.0;
                     _showRunningQuestionBottomSheet();
                   },
-                  child: Icon(
-                    Icons.stop,
-                    size: 55,
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     foregroundColor: Colors.white,
                     shape: CircleBorder(),
                     padding: EdgeInsets.all(5),
+                  ),
+                  child: const Icon(
+                    Icons.stop,
+                    size: 55,
                   ),
                 )
               ],
