@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
+import 'package:newbalance_flutter/result_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -32,6 +33,9 @@ class _RunningPageState extends State<RunningPage> {
 
 
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
+
+  int state = 0;
+  int time = 0;
 
   @override
   void initState() {
@@ -203,6 +207,7 @@ class _RunningPageState extends State<RunningPage> {
                     ThingsBoardService.saveSharedAttributes(ThingsBoardService.rightFootDevice, false);
                     ThingsBoardService.saveSharedAttributes(ThingsBoardService.leftFootDevice, false);
                     Navigator.pop(context);
+                    time = _stopWatchTimer.rawTime.value;
                     _stopWatchTimer.onResetTimer();
                     _dist = 0.0;
                     _showRunningQuestionBottomSheet();
@@ -234,6 +239,8 @@ class _RunningPageState extends State<RunningPage> {
         Navigator.pop(context);
         //ThingsBoardService.getSharedAttributes(ThingsBoardService.rightFootDevice);
         ThingsBoardService.getSharedAttributes(ThingsBoardService.leftFootDevice);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ResultPage(totalTime: time, distance: _dist, state: state)));
+        state = num;
       },
       style: ElevatedButton.styleFrom(
           shape: CircleBorder(),

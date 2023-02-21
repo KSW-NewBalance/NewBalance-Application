@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:newbalance_flutter/analysis_page.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:newbalance_flutter/countdown_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  const MainPage({super.key, required this.state});
+
+  final int state;
 
   @override
   State<StatefulWidget> createState() => _MainPageState();
@@ -73,7 +76,9 @@ class _MainPageState extends State<MainPage> {
           alignment: Alignment.topRight,
           margin: EdgeInsets.fromLTRB(0.0, 54.0, 10.0, 0.0),
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AnalysisPage(state: widget.state)));
+            },
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
               padding: EdgeInsets.symmetric(vertical: 13.0, horizontal: 11.0),

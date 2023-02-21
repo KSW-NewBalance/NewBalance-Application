@@ -4,9 +4,10 @@ import 'package:table_calendar/table_calendar.dart';
 import 'Event.dart';
 
 class AnalysisPage extends StatefulWidget {
-  AnalysisPage({super.key, required this.title});
+  AnalysisPage({super.key, required this.state});
 
-final String title;
+final int state;
+
 
 @override
 State<AnalysisPage> createState() => _AnalysisPageState();
@@ -14,12 +15,13 @@ State<AnalysisPage> createState() => _AnalysisPageState();
 
 class _AnalysisPageState extends State<AnalysisPage> {
   late Map<DateTime, List<Event>> selectedEvents;
+
   @override
   void initState() {
     super.initState();
     // test data to pass through to calendar
-    // TODO: need to find average of states and then pass that array to the eventLoader
-    selectedEvents = {DateTime.utc(2023,2,7): [Event(state: 3)] , DateTime.utc(2023,2,4): [Event(state: 1)],  DateTime.utc(2023,2,19): [Event(state: 5)]};
+    selectedEvents = {DateTime.utc(2023,2,7): [Event(state: 3)] , DateTime.utc(2023,2,4): [Event(state: 1)],  DateTime.utc(2023,2,19): [Event(state: 5)],
+      DateTime.utc(2023,2,21): [Event(state: widget.state)]}; // change last one to today for demonstration
   }
   List<Event> _getEventsfromDay(DateTime date) {
     return selectedEvents[date] ?? [];
@@ -41,7 +43,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
+          title: Text("Analysis"),
         ),
         body: TableCalendar(
             headerStyle: const HeaderStyle(
