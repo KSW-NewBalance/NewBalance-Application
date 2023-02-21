@@ -6,7 +6,6 @@ class ThingsBoardService {
   static const String rightFootId = 'b5fe57a0-b153-11ed-8412-f17eb4c552ac';
   static const String leftFootId = 'a1bc5670-b153-11ed-8412-f17eb4c552ac';
 
-
   // Create instance of ThingsBoard API Client
   static var tbClient = ThingsboardClient(apiEndPoint);
   static var rightFootDevice;
@@ -43,17 +42,15 @@ class ThingsBoardService {
 
   // Find device by device id
   static void findRightFootDevice() async {
-    DeviceInfo? foundDevice = await tbClient
-        .getDeviceService()
-        .getDeviceInfo(rightFootId);
+    DeviceInfo? foundDevice =
+        await tbClient.getDeviceService().getDeviceInfo(rightFootId);
     debugPrint('right foundDevice: ${foundDevice}');
     rightFootDevice = foundDevice;
   }
 
   static void findLeftFootDevice() async {
-    DeviceInfo? foundDevice = await tbClient
-        .getDeviceService()
-        .getDeviceInfo(leftFootId);
+    DeviceInfo? foundDevice =
+        await tbClient.getDeviceService().getDeviceInfo(leftFootId);
     debugPrint('left foundDevice: ${foundDevice}');
     leftFootDevice = foundDevice;
   }
@@ -66,4 +63,24 @@ class ThingsBoardService {
         {'isRunning': value});
     debugPrint('Save attributes result: $res');
   }
+
+  //todo To be use in Result page
+  // Get device shared attributes
+  static void getSharedAttributes(DeviceInfo device) async {
+    List<AttributeKvEntry> attributes = await tbClient.getAttributeService().getAttributesByScope(
+        device.id!, AttributeScope.SHARED_SCOPE.toShortString(), [
+      'avg_foot_angle',
+      'total_fsr_1st',
+      'total_fsr_2nd',
+      'total_fsr_3rd',
+      'total_fsr_4th'
+    ]);
+
+    var dataMap = {};
+    for (var entry in attributes){
+      debugPrint('${entry.getKey()}: ${entry.getValue()}');
+      dataMap[entry.getKey()] = entry.getValue();
+    }
+  }
+
 }

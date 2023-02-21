@@ -232,6 +232,8 @@ class _RunningPageState extends State<RunningPage> {
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
+        //ThingsBoardService.getSharedAttributes(ThingsBoardService.rightFootDevice);
+        ThingsBoardService.getSharedAttributes(ThingsBoardService.leftFootDevice);
       },
       style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
@@ -313,7 +315,6 @@ class _RunningPageState extends State<RunningPage> {
             points: _polyline,
             color: constants.secondaryColor,
             width: 6
-            //patterns: [PatternItem.dash(10), PatternItem.gap(10)],
             )
       },
       markers: {
