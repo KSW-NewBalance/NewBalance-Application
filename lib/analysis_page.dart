@@ -18,7 +18,8 @@ class AnalysisPage extends StatefulWidget {
 }
 
 class _AnalysisPageState extends State<AnalysisPage> {
-  late Map<DateTime, List<Event>> selectedEvents;
+  List<int> intensityList = [0,1,2,3,4,5];
+  Map<DateTime, List<Event>> selectedEvents = Map();
   TextStyle subTitleTextStyle =
       const TextStyle(fontWeight: FontWeight.w600, fontSize: 21);
 
@@ -26,12 +27,15 @@ class _AnalysisPageState extends State<AnalysisPage> {
   void initState() {
     super.initState();
     // test data to pass through to calendar
-    selectedEvents = {
-      DateTime.utc(2023, 2, 7): [Event(state: 3)],
-      DateTime.utc(2023, 2, 4): [Event(state: 1)],
-      DateTime.utc(2023, 2, 19): [Event(state: 5)],
-      DateTime.utc(2023, 2, 21): [Event(state: widget.state)]
-    }; // change last one to today for demonstration
+    int today = DateTime.now().day;
+    for (int i=1; i<today; i++){
+      var date = DateTime.utc(2023, 2, i);
+      var state = intensityList[Random().nextInt(5)];
+      if (state == 0) continue;
+      var intensity = Event(state: state);
+      selectedEvents[date] = [intensity];
+    }
+    selectedEvents[DateTime.utc(2023, 2,today)] = [Event(state: 5)];
   }
 
   List<Event> _getEventsfromDay(DateTime date) {
@@ -60,24 +64,24 @@ class _AnalysisPageState extends State<AnalysisPage> {
           singleMarkerBuilder: (BuildContext context, date, _) {
             switch (selectedEvents[date]?[0].state) {
               case 1:
-                width = 7.0;
-                height = 7.0;
+                width = 6.0;
+                height = 6.0;
                 break;
               case 2:
                 width = 9.0;
                 height = 9.0;
                 break;
               case 3:
-                width = 11.0;
-                height = 11.0;
+                width = 12.0;
+                height = 12.0;
                 break;
               case 4:
-                width = 13.0;
-                height = 13.0;
-                break;
-              case 5:
                 width = 15.0;
                 height = 15.0;
+                break;
+              case 5:
+                width = 18.0;
+                height = 18.0;
                 break;
             }
             return Container(
@@ -104,11 +108,11 @@ class _AnalysisPageState extends State<AnalysisPage> {
     for (int i = 15; i < 22; i++) {
       double angleR = angleListR[Random().nextInt(angleListR.length)];
       double angleL = angleListL[Random().nextInt(angleListL.length)];
-      footAngleListR.add(FootAngle(DateTime(2023, 1,i), angleR));
-      footAngleListL.add(FootAngle(DateTime(2023, 1,i), angleL));
+      footAngleListR.add(FootAngle(DateTime(2023, 2,i), angleR));
+      footAngleListL.add(FootAngle(DateTime(2023, 2,i), angleL));
     }
-    footAngleListR.add(FootAngle(DateTime(2023, 1,22), 3.2));
-    footAngleListL.add(FootAngle(DateTime(2023, 1,22), 1.6));
+    footAngleListR.add(FootAngle(DateTime(2023, 2,22), 3.6));
+    footAngleListL.add(FootAngle(DateTime(2023, 2,22), 1.9));
 
     return SfCartesianChart(
       primaryXAxis: DateTimeAxis(
@@ -144,6 +148,11 @@ class _AnalysisPageState extends State<AnalysisPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(constants.analysis),
+          leading: BackButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+          ),
         ),
         body: Column(
           children: <Widget>[

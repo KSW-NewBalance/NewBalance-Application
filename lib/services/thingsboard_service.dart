@@ -14,26 +14,8 @@ class ThingsBoardService {
 
   // Perform login with default Tenant Administrator credentials
   static void performLoginInTenant() async {
-    var response =
-        await tbClient.login(LoginRequest('tenant@thingsboard.org', 'tenant'));
-    //debugPrint('jwt: ${response.token}');
-
+    await tbClient.login(LoginRequest('tenant@thingsboard.org', 'tenant'));
     findDeviceByFootId();
-  }
-
-  void addDevice() async {
-    try {
-      // Construct device object
-      var device = Device('App Device', 'default');
-      device.additionalInfo = {'description': 'Test App Device'};
-
-      // Add device
-      var savedDevice = await tbClient.getDeviceService().saveDevice(device);
-      debugPrint('savedDevice: ${savedDevice}');
-    } catch (e, s) {
-      debugPrint('Error: $e');
-      debugPrint('Stack: $s');
-    }
   }
 
   static void findDeviceByFootId() {
@@ -67,8 +49,10 @@ class ThingsBoardService {
 
   // Get device shared attributes
   static Future<Map> getSharedAttributes(DeviceInfo device) async {
-    List<AttributeKvEntry> attributes = await tbClient.getAttributeService().getAttributesByScope(
-        device.id!, AttributeScope.SHARED_SCOPE.toShortString(), [
+    List<AttributeKvEntry> attributes = await tbClient
+        .getAttributeService()
+        .getAttributesByScope(
+            device.id!, AttributeScope.SHARED_SCOPE.toShortString(), [
       constants.avgFootAngle,
       constants.fsr1,
       constants.fsr2,
@@ -77,12 +61,11 @@ class ThingsBoardService {
     ]);
 
     var dataMap = {};
-    for (var entry in attributes){
+    for (var entry in attributes) {
       debugPrint('${entry.getKey()}: ${entry.getValue()}');
       dataMap[entry.getKey()] = entry.getValue();
     }
 
     return dataMap;
   }
-
 }

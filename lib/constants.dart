@@ -24,6 +24,11 @@ const String afterRunningQuestion = 'How was your run?';
 const String easy = 'easy';
 const String hard = 'hard';
 
+/// Results Page
+const String results = 'Results';
+const String angle = 'Angle';
+const String landingLocation = 'Landing Location';
+
 /// Analysis Page
 const String analysis = 'Analysis';
 const String intensity = 'Intensity';

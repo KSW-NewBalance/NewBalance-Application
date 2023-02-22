@@ -150,7 +150,7 @@ class _ResultPageState extends State<ResultPage> {
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
           // the App.build method, and use it to set our appbar title.
-          title: Text("Results"),
+          title: Text(constants.results),
           leading: BackButton(
             onPressed: () {
               Navigator.push(
@@ -238,7 +238,7 @@ class _ResultPageState extends State<ResultPage> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                 alignment: Alignment.centerLeft,
                 child: const Text(
-                  "Angle",
+                  constants.angle,
                   style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
                 )),
             Container(
@@ -305,7 +305,7 @@ class _ResultPageState extends State<ResultPage> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                 alignment: Alignment.centerLeft,
                 child: const Text(
-                  "Landing Location",
+                  constants.landingLocation,
                   style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
                 )),
             Container(
