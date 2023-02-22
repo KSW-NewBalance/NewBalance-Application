@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         primaryColor: constants.primaryColor,
         textTheme: GoogleFonts.notoSansTextTheme()
       ),
-      home: const MainPage(state: 0),
+      home: const MainPage(),
     );
   }
 }

@@ -7,9 +7,7 @@ import 'package:newbalance_flutter/countdown_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key, required this.state});
-
-  final int state;
+  const MainPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _MainPageState();
@@ -77,7 +75,7 @@ class _MainPageState extends State<MainPage> {
           margin: EdgeInsets.fromLTRB(0.0, 54.0, 10.0, 0.0),
           child: ElevatedButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AnalysisPage(state: widget.state)));
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AnalysisPage()));
             },
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
