@@ -241,10 +241,8 @@ class _RunningPageState extends State<RunningPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ResultPage(
-                    totalTime:
-                        StopWatchTimer.getDisplayTime(time)
-                            .substring(3, 8),
-                    distance: (_dist / 1000).toStringAsFixed(2),
+                    totalTime: time,
+                    distance: (_dist / 1000),
                     state: state)));
         state = num;
       },

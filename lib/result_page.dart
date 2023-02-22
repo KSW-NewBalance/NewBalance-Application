@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:newbalance_flutter/main_page.dart';
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
+import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ResultPage extends StatefulWidget {
   const ResultPage(
@@ -12,8 +13,8 @@ class ResultPage extends StatefulWidget {
       required this.distance,
       required this.state});
 
-  final String totalTime;
-  final String distance;
+  final int totalTime;
+  final double distance;
   final int state;
 
   @override
@@ -42,7 +43,7 @@ class _ResultPageState extends State<ResultPage> {
     super.initState();
     getFootData();
     // test running stats
-    date = DateFormat('MM/dd/yyyy   kk:mm').format(DateTime.now());
+    date = DateFormat('MM/dd/yyyy   kk:mm a').format(DateTime.now());
   }
 
   void getFootData() {
@@ -112,6 +113,10 @@ class _ResultPageState extends State<ResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    var pace = ((widget.totalTime/1000/60)/widget.distance).toStringAsFixed(2);
+    var paceList = pace.split('.');
+    debugPrint('${pace.split('.')}');
+
     return Scaffold(
         appBar: AppBar(
           // Here we take the value from the MyHomePage object that was created by
@@ -133,11 +138,12 @@ class _ResultPageState extends State<ResultPage> {
           Section 1: Run path and stats
            */
             Container(
-                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   date,
-                  style: const TextStyle(fontSize: 20),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.w600),
                 )),
             Container(
               height: 200,
@@ -155,28 +161,40 @@ class _ResultPageState extends State<ResultPage> {
                     ])),
                 Expanded(
                     flex: 1,
-                    child: Column(children: <Widget>[
-                      Column(children: <Widget>[
-                        Text(widget.totalTime.toString(),
-                            style: const TextStyle(fontSize: 20)),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                          alignment: Alignment.center,
-                          child: const Text("Total time",
-                              style: TextStyle(color: Colors.blue)),
-                        )
-                      ]),
-                      Column(children: <Widget>[
-                        Text(widget.distance,
-                            style: const TextStyle(fontSize: 20)),
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                          alignment: Alignment.center,
-                          child: const Text("Distance",
-                              style: TextStyle(color: Colors.blue)),
-                        )
-                      ]),
-                    ]))
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          Column(children: <Widget>[
+                            Text('${StopWatchTimer.getDisplayTime(widget.totalTime)
+                        .substring(3, 8)} ',
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500)),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                              alignment: Alignment.center,
+                              child: const Text(constants.totalTime,
+                                  style: TextStyle(color: Colors.blue)),
+                            )
+                          ]),
+                          Column(children: <Widget>[
+                            Text('${widget.distance.toStringAsFixed(2)} km',
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500)),
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                              alignment: Alignment.center,
+                              child: const Text(constants.distance,
+                                  style: TextStyle(color: Colors.blue)),
+                            )
+                          ]),
+                          Column(
+                            children: <Widget>[
+                              Text('${paceList[0]}\'${paceList[1]}\"', style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w500)),
+                              Text(constants.averagePage, style: TextStyle(color: Colors.blue),)
+                            ],
+                          )
+                        ]))
               ]),
             ),
 
@@ -188,7 +206,7 @@ class _ResultPageState extends State<ResultPage> {
                 alignment: Alignment.centerLeft,
                 child: const Text(
                   "Angle",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
                 )),
             Container(
               height: 200,
@@ -199,6 +217,7 @@ class _ResultPageState extends State<ResultPage> {
                   color: Color(0xfff1f1f1),
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Column(
                     children: <Widget>[
@@ -223,7 +242,8 @@ class _ResultPageState extends State<ResultPage> {
                   ),
                   Column(
                     children: <Widget>[
-                      Text('${double.parse(rightFootAngle.toStringAsFixed(2))}°',
+                      Text(
+                          '${double.parse(rightFootAngle.toStringAsFixed(2))}°',
                           style: const TextStyle(color: Colors.blue)),
                       Stack(children: <Widget>[
                         Image.asset(
@@ -253,7 +273,7 @@ class _ResultPageState extends State<ResultPage> {
                 alignment: Alignment.centerLeft,
                 child: const Text(
                   "Landing Location",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
                 )),
             Container(
               height: 200,
@@ -264,6 +284,7 @@ class _ResultPageState extends State<ResultPage> {
                   color: Color(0xfff1f1f1),
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Column(
                     children: <Widget>[
