@@ -347,14 +347,14 @@ class _RunningPageState extends State<RunningPage> {
           ? Container(
               alignment: Alignment.center,
               color: Colors.blue,
-              child: const Text(
-                '0',
-                style: TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 140,
-                    color: Colors.white),
-              ),
+              // child: const Text(
+              //   '0',
+              //   style: TextStyle(
+              //       fontStyle: FontStyle.italic,
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 140,
+              //       color: Colors.white),
+              // ),
             )
           : _buildView(),
     );

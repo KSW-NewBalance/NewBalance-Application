@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
 
+import 'analysis_page.dart';
 import 'main_page.dart';
 import 'constants.dart' as constants;
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primaryColor: constants.primaryColor,
         textTheme: GoogleFonts.notoSansTextTheme()
       ),
-      home: const MainPage(state: 0),
+      home: const AnalysisPage(state: 0),
     );
   }
 }

@@ -44,6 +44,7 @@ dependencies:
   stop_watch_timer: ^2.0.0
   shared_preferences: ^2.0.17
   thingsboard_client: ^1.0.1
+  syncfusion_flutter_charts: ^20.4.51
 
 dev_dependencies:
   flutter_test:
