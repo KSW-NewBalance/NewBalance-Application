@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
@@ -7,21 +10,24 @@ import 'package:newbalance_flutter/services/thingsboard_service.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage(
-      {super.key,
+  const ResultPage({super.key,
       required this.totalTime,
       required this.distance,
-      required this.state});
+      required this.state,
+        required this.polyline});
 
   final int totalTime;
   final double distance;
   final int state;
+  final List<LatLng> polyline;
 
   @override
   State<ResultPage> createState() => _ResultPageState();
 }
 
 class _ResultPageState extends State<ResultPage> {
+  final Completer<GoogleMapController> _controller = Completer();
+
   double rightFootAngle = 0.0;
   double leftFootAngle = 0.0;
 
@@ -111,9 +117,32 @@ class _ResultPageState extends State<ResultPage> {
     });
   }
 
+  GoogleMap _buildRoute() {
+    var centerLat = (widget.polyline.last.latitude + widget.polyline.first.latitude)/2;
+    var centerLng = (widget.polyline.last.longitude + widget.polyline.first.longitude)/2;
+
+    return GoogleMap(
+      onMapCreated: (mapController) {
+        _controller.complete(mapController);
+      },
+        initialCameraPosition: CameraPosition(
+      target: LatLng(centerLat, centerLng), zoom: 15),
+      mapType: MapType.normal,
+      polylines: {
+        Polyline(
+            polylineId: PolylineId("route"),
+            points: widget.polyline,
+            color: constants.secondaryColor,
+            width: 6)
+      },
+      myLocationButtonEnabled: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    var pace = ((widget.totalTime/1000/60)/widget.distance).toStringAsFixed(2);
+    var pace =
+        ((widget.totalTime / 1000 / 60) / widget.distance).toStringAsFixed(2);
     var paceList = pace.split('.');
     debugPrint('${pace.split('.')}');
 
@@ -155,18 +184,17 @@ class _ResultPageState extends State<ResultPage> {
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(children: <Widget>[
                 Expanded(
-                    flex: 2,
-                    child: Column(children: const <Widget>[
-                      // TODO map picture
-                    ])),
+                  flex: 2,
+                  child: _buildRoute(),
+                ),
                 Expanded(
                     flex: 1,
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: <Widget>[
                           Column(children: <Widget>[
-                            Text('${StopWatchTimer.getDisplayTime(widget.totalTime)
-                        .substring(3, 8)} ',
+                            Text(
+                                '${StopWatchTimer.getDisplayTime(widget.totalTime).substring(3, 8)} ',
                                 style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w500)),
                             Container(
@@ -189,9 +217,14 @@ class _ResultPageState extends State<ResultPage> {
                           ]),
                           Column(
                             children: <Widget>[
-                              Text('${paceList[0]}\'${paceList[1]}\"', style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w500)),
-                              Text(constants.averagePage, style: TextStyle(color: Colors.blue),)
+                              Text('${paceList[0]}\'${paceList[1]}\"',
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500)),
+                              Text(
+                                constants.averagePage,
+                                style: TextStyle(color: Colors.blue),
+                              )
                             ],
                           )
                         ]))

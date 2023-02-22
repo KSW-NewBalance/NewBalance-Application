@@ -241,9 +241,11 @@ class _RunningPageState extends State<RunningPage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ResultPage(
-                    totalTime: time,
-                    distance: (_dist / 1000),
-                    state: state)));
+                      totalTime: time,
+                      distance: (_dist / 1000),
+                      state: state,
+                      polyline: _polyline,
+                    )));
         state = num;
       },
       style: ElevatedButton.styleFrom(
