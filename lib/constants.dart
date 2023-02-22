@@ -5,6 +5,12 @@ const String google_api_key = 'AIzaSyA5zxSbB16eMscJpvC1jIdLU_eUJJvONo0';
 const Color primaryColor = Color(0xff5BD4EA);
 const Color secondaryColor = Color(0xffffcd37);
 
+/// ThingsBoard
+const avgFootAngle = 'avg_foot_angle';
+const fsr1 = 'total_fsr_1st';
+const fsr2 = 'total_fsr_2nd';
+const fsr3 = 'total_fsr_3rd';
+const fsr4 = 'total_fsr_4th';
 
 /// Main Page
 const String start = 'Start';
