@@ -86,7 +86,7 @@ class _RunningPageState extends State<RunningPage> {
           _dist += appendDist;
           distController.add(_dist);
         }
-        debugPrint('dist = ${_dist}');
+        //debugPrint('dist = ${_dist}');
 
         addPolyPoints(newLoc);
       });
@@ -211,7 +211,6 @@ class _RunningPageState extends State<RunningPage> {
                     Navigator.pop(context);
                     time = _stopWatchTimer.rawTime.value;
                     _stopWatchTimer.onResetTimer();
-                    _dist = 0.0;
                     _showRunningQuestionBottomSheet();
                   },
                   style: ElevatedButton.styleFrom(
@@ -234,6 +233,7 @@ class _RunningPageState extends State<RunningPage> {
   }
 
   ElevatedButton _numberButton(int num) {
+    debugPrint('dist = ${(_dist / 1000).toStringAsFixed(2)}');
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
@@ -244,7 +244,7 @@ class _RunningPageState extends State<RunningPage> {
                     totalTime:
                         StopWatchTimer.getDisplayTime(time)
                             .substring(3, 8),
-                    distance: _dist,
+                    distance: (_dist / 1000).toStringAsFixed(2),
                     state: state)));
         state = num;
       },
@@ -364,5 +364,6 @@ class _RunningPageState extends State<RunningPage> {
   void dispose() async {
     super.dispose();
     await _stopWatchTimer.dispose();
+    distController.close();
   }
 }

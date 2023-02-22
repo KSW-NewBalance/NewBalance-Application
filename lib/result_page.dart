@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
-import 'package:newbalance_flutter/constants.dart';
+import 'package:newbalance_flutter/constants.dart' as constants;
 import 'package:newbalance_flutter/main_page.dart';
+import 'package:newbalance_flutter/services/thingsboard_service.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({super.key, required this.totalTime, required this.distance, required this.state});
-  final int totalTime;
-  final double distance;
+  const ResultPage(
+      {super.key,
+      required this.totalTime,
+      required this.distance,
+      required this.state});
+
+  final String totalTime;
+  final String distance;
   final int state;
 
   @override
@@ -15,45 +21,93 @@ class ResultPage extends StatefulWidget {
 }
 
 class _ResultPageState extends State<ResultPage> {
-  late double rightFootAngle;
-  late double leftFootAngle;
+  double rightFootAngle = 0.0;
+  double leftFootAngle = 0.0;
 
-  late String foreFootColorL;
-  late String medialFootColorL;
-  late String lateralFootColorL;
-  late String rearFootColorL;
-  late String foreFootColorR;
-  late String medialFootColorR;
-  late String lateralFootColorR;
-  late String rearFootColorR;
+  static List<String> colorList = ['B', 'G', 'Y', 'R'];
+
+  String foreFootColorL = colorList[0];
+  String medialFootColorL = colorList[0];
+  String lateralFootColorL = colorList[0];
+  String rearFootColorL = colorList[0];
+  String foreFootColorR = colorList[0];
+  String medialFootColorR = colorList[0];
+  String lateralFootColorR = colorList[0];
+  String rearFootColorR = colorList[0];
 
   late String date;
-  late String averagePace;
 
   @override
   void initState() {
     super.initState();
-    // test angles in degrees, need to load this in from api
-    leftFootAngle = 5;
-    rightFootAngle = 15;
-
-    // test colors
-    foreFootColorL = 'Y';
-    rearFootColorL = 'R';
-    medialFootColorL = 'B';
-    lateralFootColorL = 'G';
-
-    foreFootColorR = 'R';
-    rearFootColorR = 'Y';
-    medialFootColorR = 'G';
-    lateralFootColorR = 'B';
-
+    getFootData();
     // test running stats
-
-    averagePace = "02.13";
     date = DateFormat('MM/dd/yyyy   kk:mm').format(DateTime.now());
+  }
 
+  void getFootData() {
+    var rightFootData = ThingsBoardService.getSharedAttributes(
+        ThingsBoardService.rightFootDevice);
+    rightFootData.then((data) {
+      rightFootAngle = data[constants.avgFootAngle];
+      data.remove(constants.avgFootAngle);
 
+      var sortedKeys = data.keys.toList(growable: false)
+        ..sort((k1, k2) => data[k1].compareTo(data[k2]));
+      debugPrint('right: $sortedKeys');
+
+      for (int i = 0; i < 4; i++) {
+        switch (sortedKeys[i]) {
+          case 'total_fsr_1st':
+            foreFootColorR = colorList[i];
+            break;
+          case 'total_fsr_2nd':
+            medialFootColorR = colorList[i];
+            break;
+          case 'total_fsr_3rd':
+            lateralFootColorR = colorList[i];
+            break;
+          case 'total_fsr_4th':
+            rearFootColorR = colorList[i];
+            break;
+        }
+      }
+      setState(() {});
+      debugPrint(
+          '$foreFootColorR, $medialFootColorR, $lateralFootColorR, $rearFootColorR');
+    });
+
+    var leftFootData = ThingsBoardService.getSharedAttributes(
+        ThingsBoardService.leftFootDevice);
+    leftFootData.then((data) {
+      leftFootAngle = data[constants.avgFootAngle];
+
+      data.remove(constants.avgFootAngle);
+
+      var sortedKeys = data.keys.toList(growable: false)
+        ..sort((k1, k2) => data[k1].compareTo(data[k2]));
+      debugPrint('left: $sortedKeys');
+
+      for (int i = 0; i < 4; i++) {
+        switch (sortedKeys[i]) {
+          case 'total_fsr_1st':
+            foreFootColorL = colorList[i];
+            break;
+          case 'total_fsr_2nd':
+            medialFootColorL = colorList[i];
+            break;
+          case 'total_fsr_3rd':
+            lateralFootColorL = colorList[i];
+            break;
+          case 'total_fsr_4th':
+            rearFootColorL = colorList[i];
+            break;
+        }
+      }
+      setState(() {});
+      debugPrint(
+          '$foreFootColorL, $medialFootColorL, $lateralFootColorL, $rearFootColorL');
+    });
   }
 
   @override
@@ -65,7 +119,10 @@ class _ResultPageState extends State<ResultPage> {
           title: Text("Results"),
           leading: BackButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage(state: widget.state)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MainPage(state: widget.state)));
             },
           ),
         ),
@@ -100,7 +157,8 @@ class _ResultPageState extends State<ResultPage> {
                     flex: 1,
                     child: Column(children: <Widget>[
                       Column(children: <Widget>[
-                        Text(widget.totalTime.toString(), style: const TextStyle(fontSize: 20)),
+                        Text(widget.totalTime.toString(),
+                            style: const TextStyle(fontSize: 20)),
                         Container(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                           alignment: Alignment.center,
@@ -109,7 +167,8 @@ class _ResultPageState extends State<ResultPage> {
                         )
                       ]),
                       Column(children: <Widget>[
-                        Text((double.parse((widget.distance).toStringAsFixed(2))).toString(), style: const TextStyle(fontSize: 20)),
+                        Text(widget.distance,
+                            style: const TextStyle(fontSize: 20)),
                         Container(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 12),
                           alignment: Alignment.center,
@@ -143,7 +202,7 @@ class _ResultPageState extends State<ResultPage> {
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      Text("$leftFootAngle°",
+                      Text('${double.parse(leftFootAngle.toStringAsFixed(2))}°',
                           style: const TextStyle(color: Colors.blue)),
                       Stack(children: <Widget>[
                         Image.asset(
@@ -164,7 +223,7 @@ class _ResultPageState extends State<ResultPage> {
                   ),
                   Column(
                     children: <Widget>[
-                      Text("$rightFootAngle°",
+                      Text('${double.parse(rightFootAngle.toStringAsFixed(2))}°',
                           style: const TextStyle(color: Colors.blue)),
                       Stack(children: <Widget>[
                         Image.asset(

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
+import 'package:newbalance_flutter/constants.dart' as constants;
 
 class ThingsBoardService {
   static const String apiEndPoint = 'http://34.125.194.104:8080/';
@@ -64,16 +65,15 @@ class ThingsBoardService {
     debugPrint('Save attributes result: $res');
   }
 
-  //todo To be use in Result page
   // Get device shared attributes
-  static void getSharedAttributes(DeviceInfo device) async {
+  static Future<Map> getSharedAttributes(DeviceInfo device) async {
     List<AttributeKvEntry> attributes = await tbClient.getAttributeService().getAttributesByScope(
         device.id!, AttributeScope.SHARED_SCOPE.toShortString(), [
-      'avg_foot_angle',
-      'total_fsr_1st',
-      'total_fsr_2nd',
-      'total_fsr_3rd',
-      'total_fsr_4th'
+      constants.avgFootAngle,
+      constants.fsr1,
+      constants.fsr2,
+      constants.fsr3,
+      constants.fsr4
     ]);
 
     var dataMap = {};
@@ -81,6 +81,8 @@ class ThingsBoardService {
       debugPrint('${entry.getKey()}: ${entry.getValue()}');
       dataMap[entry.getKey()] = entry.getValue();
     }
+
+    return dataMap;
   }
 
 }
