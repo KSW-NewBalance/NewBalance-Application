@@ -3,15 +3,14 @@ import 'package:intl/intl.dart';
 
 import 'package:flutter/material.dart';
 import 'package:newbalance_flutter/model/FootAngle.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'model/Event.dart';
 import 'package:newbalance_flutter/constants.dart' as constants;
 
 class AnalysisPage extends StatefulWidget {
-  const AnalysisPage({super.key, required this.state});
-
-  final int state;
+  const AnalysisPage({super.key});
 
   @override
   State<AnalysisPage> createState() => _AnalysisPageState();
@@ -27,6 +26,10 @@ class _AnalysisPageState extends State<AnalysisPage> {
   void initState() {
     super.initState();
     // test data to pass through to calendar
+   insertDummyDataInCalendar();
+  }
+
+  void insertDummyDataInCalendar(){
     int today = DateTime.now().day;
     for (int i=1; i<today; i++){
       var date = DateTime.utc(2023, 2, i);
@@ -35,7 +38,15 @@ class _AnalysisPageState extends State<AnalysisPage> {
       var intensity = Event(state: state);
       selectedEvents[date] = [intensity];
     }
-    selectedEvents[DateTime.utc(2023, 2,today)] = [Event(state: 5)];
+    insertTodayIntensity();
+  }
+
+  void insertTodayIntensity() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? intensity = prefs.getInt(constants.intensityState);
+    intensity ??= 0;
+    selectedEvents[DateTime.utc(2023, 2, DateTime.now().day)] = [Event(state: intensity)];
+    setState(() {});
   }
 
   List<Event> _getEventsfromDay(DateTime date) {

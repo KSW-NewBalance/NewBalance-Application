@@ -13,12 +13,10 @@ class ResultPage extends StatefulWidget {
   const ResultPage({super.key,
       required this.totalTime,
       required this.distance,
-      required this.state,
         required this.polyline});
 
   final int totalTime;
   final double distance;
-  final int state;
   final List<LatLng> polyline;
 
   @override
@@ -56,7 +54,7 @@ class _ResultPageState extends State<ResultPage> {
     var rightFootData = ThingsBoardService.getSharedAttributes(
         ThingsBoardService.rightFootDevice);
     rightFootData.then((data) {
-      rightFootAngle = data[constants.avgFootAngle];
+      rightFootAngle = data[constants.avgFootAngle].toDouble();
       data.remove(constants.avgFootAngle);
 
       var sortedKeys = data.keys.toList(growable: false)
@@ -87,7 +85,7 @@ class _ResultPageState extends State<ResultPage> {
     var leftFootData = ThingsBoardService.getSharedAttributes(
         ThingsBoardService.leftFootDevice);
     leftFootData.then((data) {
-      leftFootAngle = data[constants.avgFootAngle];
+      leftFootAngle = data[constants.avgFootAngle].toDouble();
 
       data.remove(constants.avgFootAngle);
 
@@ -156,7 +154,7 @@ class _ResultPageState extends State<ResultPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MainPage(state: widget.state)));
+                      builder: (context) => MainPage()));
             },
           ),
         ),
@@ -217,7 +215,7 @@ class _ResultPageState extends State<ResultPage> {
                           ]),
                           Column(
                             children: <Widget>[
-                              Text('${paceList[0]}\'${paceList[1]}\"',
+                              Text('${paceList[0]}\' ${paceList[1]}\"',
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w500)),

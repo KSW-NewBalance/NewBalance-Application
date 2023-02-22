@@ -110,7 +110,7 @@ class _RunningPageState extends State<RunningPage> {
 
   void showBottomSheet() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      Future.delayed(const Duration(microseconds: 500), () {
+      Future.delayed(const Duration(microseconds: 1000), () {
         _stopWatchTimer.onStartTimer();
         getDistance();
         _showRunningInformationBottomSheet();
@@ -232,8 +232,14 @@ class _RunningPageState extends State<RunningPage> {
     return Container();
   }
 
+  void storeIntensity(int num) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt(constants.intensityState, num);
+  }
+
   ElevatedButton _numberButton(int num) {
     debugPrint('dist = ${(_dist / 1000).toStringAsFixed(2)}');
+    storeIntensity(num);
     return ElevatedButton(
       onPressed: () {
         Navigator.pop(context);
@@ -243,10 +249,8 @@ class _RunningPageState extends State<RunningPage> {
                 builder: (context) => ResultPage(
                       totalTime: time,
                       distance: (_dist / 1000),
-                      state: state,
                       polyline: _polyline,
                     )));
-        state = num;
       },
       style: ElevatedButton.styleFrom(
           shape: CircleBorder(),
@@ -347,14 +351,6 @@ class _RunningPageState extends State<RunningPage> {
           ? Container(
               alignment: Alignment.center,
               color: Colors.blue,
-              // child: const Text(
-              //   '0',
-              //   style: TextStyle(
-              //       fontStyle: FontStyle.italic,
-              //       fontWeight: FontWeight.bold,
-              //       fontSize: 140,
-              //       color: Colors.white),
-              // ),
             )
           : _buildView(),
     );

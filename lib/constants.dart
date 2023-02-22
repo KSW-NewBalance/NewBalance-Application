@@ -39,5 +39,6 @@ const String left = 'left foot';
 /// Shared Preferences
 const String latitude = 'latitude';
 const String longitude = 'longitude';
+const String intensityState = 'intensityState';
 
 
