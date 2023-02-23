@@ -45,6 +45,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int? intensity = prefs.getInt(constants.intensityState);
     intensity ??= 0;
+    debugPrint('intensity: $intensity');
     selectedEvents[DateTime.utc(2023, 2, DateTime.now().day)] = [Event(state: intensity)];
     setState(() {});
   }
@@ -111,8 +112,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
   }
 
   SfCartesianChart _buildGraph() {
-    final List<double> angleListR = [5.0, 4.3, 4.6, 5.2, 4.0, 3.9];
-    final List<double> angleListL = [2.2, 2.0, 2.9, 3.4, 3.1, 2.5];
+    final List<double> angleListR = [25.0, 24.3, 24.6, 25.2, 24.0, 23.9];
+    final List<double> angleListL = [22.2, 22.0, 22.9, 23.4, 23.1, 22.5];
     final List<FootAngle> footAngleListR = [];
     final List<FootAngle> footAngleListL = [];
 
@@ -122,8 +123,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
       footAngleListR.add(FootAngle(DateTime(2023, 2,i), angleR));
       footAngleListL.add(FootAngle(DateTime(2023, 2,i), angleL));
     }
-    footAngleListR.add(FootAngle(DateTime(2023, 2,22), 3.6));
-    footAngleListL.add(FootAngle(DateTime(2023, 2,22), 1.9));
+    footAngleListR.add(FootAngle(DateTime(2023, 2,22), 23.6));
+    footAngleListL.add(FootAngle(DateTime(2023, 2,22), 21.9));
 
     return SfCartesianChart(
       primaryXAxis: DateTimeAxis(

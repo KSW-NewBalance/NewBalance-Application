@@ -239,9 +239,9 @@ class _RunningPageState extends State<RunningPage> {
 
   ElevatedButton _numberButton(int num) {
     debugPrint('dist = ${(_dist / 1000).toStringAsFixed(2)}');
-    storeIntensity(num);
     return ElevatedButton(
       onPressed: () {
+        storeIntensity(num);
         Navigator.pop(context);
         Navigator.push(
             context,
