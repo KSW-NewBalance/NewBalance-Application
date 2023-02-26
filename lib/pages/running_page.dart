@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/util/constants.dart' as constants;
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
-import 'package:newbalance_flutter/result_page.dart';
+import 'package:newbalance_flutter/pages/result_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -22,19 +22,21 @@ class _RunningPageState extends State<RunningPage> {
   final double zoomSize = 18.0;
   final _stopWatchTimer = StopWatchTimer(mode: StopWatchMode.countUp);
 
-  Location _location = Location(); // K-SW location
-
-  List<LatLng> _polyline = [];
+  // To get GPS
+  Location _location = Location();
   LocationData? currentLocation;
+
+  // To track the running route
+  List<LatLng> _polyline = [];
+
+  // Default location: K-SW square
   LatLng source = LatLng(40.42599720832946, -86.90980084240438);
 
   double _dist = 0.0;
   StreamController<double> distController = StreamController();
+  int time = 0;
 
   BitmapDescriptor currentIcon = BitmapDescriptor.defaultMarker;
-
-  int state = 0;
-  int time = 0;
 
   @override
   void initState() {
@@ -108,6 +110,17 @@ class _RunningPageState extends State<RunningPage> {
     });
   }
 
+  void getDistance() async {
+    if (currentLocation == null) return;
+    var appendDist = Geolocator.distanceBetween(
+        source.latitude,
+        source.longitude,
+        currentLocation!.latitude!,
+        currentLocation!.longitude!);
+    _dist += appendDist;
+    distController.add(_dist);
+  }
+
   void showBottomSheet() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       Future.delayed(const Duration(microseconds: 1000), () {
@@ -140,17 +153,6 @@ class _RunningPageState extends State<RunningPage> {
       style: const TextStyle(
           color: Colors.black, fontSize: 22, fontWeight: FontWeight.w600),
     );
-  }
-
-  void getDistance() async {
-    if (currentLocation == null) return;
-    var appendDist = Geolocator.distanceBetween(
-        source.latitude,
-        source.longitude,
-        currentLocation!.latitude!,
-        currentLocation!.longitude!);
-    _dist += appendDist;
-    distController.add(_dist);
   }
 
   Container _showRunningInformationBottomSheet() {

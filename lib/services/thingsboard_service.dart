@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:thingsboard_client/thingsboard_client.dart';
-import 'package:newbalance_flutter/constants.dart' as constants;
+import 'package:newbalance_flutter/util/constants.dart' as constants;
 
 class ThingsBoardService {
   static const String apiEndPoint = 'http://34.125.194.104:8080/';

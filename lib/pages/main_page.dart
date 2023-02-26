@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:newbalance_flutter/analysis_page.dart';
-import 'package:newbalance_flutter/constants.dart' as constants;
-import 'package:newbalance_flutter/countdown_page.dart';
+import 'package:newbalance_flutter/pages/analysis_page.dart';
+import 'package:newbalance_flutter/util/constants.dart' as constants;
+import 'package:newbalance_flutter/pages/countdown_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MainPage extends StatefulWidget {

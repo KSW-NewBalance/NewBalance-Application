@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
-import 'package:newbalance_flutter/constants.dart' as constants;
-import 'package:newbalance_flutter/main_page.dart';
+import 'package:newbalance_flutter/util/constants.dart' as constants;
+import 'package:newbalance_flutter/pages/main_page.dart';
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 

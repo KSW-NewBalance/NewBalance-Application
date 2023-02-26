@@ -36,7 +36,7 @@ const String angleChange = 'Angle Change';
 const String right = 'right foot';
 const String left = 'left foot';
 
-/// Shared Preferences
+/// Shared Preferences Key
 const String latitude = 'latitude';
 const String longitude = 'longitude';
 const String intensityState = 'intensityState';

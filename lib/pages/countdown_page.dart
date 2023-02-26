@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newbalance_flutter/running_page.dart';
+import 'package:newbalance_flutter/pages/running_page.dart';
 import 'package:newbalance_flutter/services/thingsboard_service.dart';
 import 'package:stop_watch_timer/stop_watch_timer.dart';
 
@@ -55,19 +55,16 @@ class _CountdownPageState extends State<CountdownPage> {
     );
   }
 
-  // todo after 4 seconds, move to running page
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _buildView(),
+    );
+  }
 
   @override
   void dispose() async {
     super.dispose();
     await _countdownTimer.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    return Scaffold(
-      body: _buildView(),
-    );
   }
 }

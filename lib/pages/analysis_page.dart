@@ -6,8 +6,8 @@ import 'package:newbalance_flutter/model/FootAngle.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'model/Event.dart';
-import 'package:newbalance_flutter/constants.dart' as constants;
+import '../model/Event.dart';
+import 'package:newbalance_flutter/util/constants.dart' as constants;
 
 class AnalysisPage extends StatefulWidget {
   const AnalysisPage({super.key});
