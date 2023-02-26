@@ -22,7 +22,7 @@ class _CountdownPageState extends State<CountdownPage> {
     _countdownTimer.onStartTimer();
     var runningPage = const RunningPage();
     _countdownTimer.rawTime.listen((value) {
-      if (value == 0) {
+      if (value == 0) { // after 4 seconds, it navigates to running page
         Navigator.pop(context);
         Navigator.push(context, MaterialPageRoute(builder: (context) => runningPage));
       }

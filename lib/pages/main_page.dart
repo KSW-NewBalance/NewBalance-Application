@@ -51,7 +51,7 @@ class _MainPageState extends State<MainPage> {
             padding: EdgeInsets.fromLTRB(0, 0, 10, 114)
             //onCameraMove: (cameraPosition)=> debugPrint('Map Moved: ${cameraPosition}'),
             ),
-        Container(
+        Container( // Navigate to countdownPage by pressing the start button
           margin: EdgeInsets.fromLTRB(20.0, 0, 20.0, 42.0),
           alignment: Alignment.bottomCenter,
           child: ElevatedButton(
@@ -74,7 +74,7 @@ class _MainPageState extends State<MainPage> {
           alignment: Alignment.topRight,
           margin: EdgeInsets.fromLTRB(0.0, 54.0, 10.0, 0.0),
           child: ElevatedButton(
-            onPressed: () {
+            onPressed: () { // Navigate to Analysis Page
               Navigator.push(context, MaterialPageRoute(builder: (context) => AnalysisPage()));
             },
             style: ElevatedButton.styleFrom(

@@ -85,7 +85,7 @@ class _RunningPageState extends State<RunningPage> {
               _polyline.last.longitude,
               newLoc.latitude!,
               newLoc.longitude!);
-          _dist += appendDist;
+          _dist += appendDist; // accumlate dist to get total distance
           distController.add(_dist);
         }
         //debugPrint('dist = ${_dist}');
@@ -205,7 +205,7 @@ class _RunningPageState extends State<RunningPage> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () { // Stop running by clicking the stop button
                     ThingsBoardService.saveSharedAttributes(
                         ThingsBoardService.rightFootDevice, false);
                     ThingsBoardService.saveSharedAttributes(
@@ -245,6 +245,7 @@ class _RunningPageState extends State<RunningPage> {
       onPressed: () {
         storeIntensity(num);
         Navigator.pop(context);
+        // After clicking the number button, it navigates to Result page with total time, distance, route data
         Navigator.push(
             context,
             MaterialPageRoute(
